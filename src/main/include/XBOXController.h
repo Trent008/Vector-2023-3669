@@ -6,7 +6,10 @@ class XBOXController
 {
 private:
     frc::Joystick *joy;
-    double nominalSpeed = 0.1;
+    double nominalSpeed = 0.15;
+    double nominalRotationRate = 0.1;
+    double speed = 0.8;
+    double rotationSpeed = 0.4;
     double deadband = 0.03;
     double a;
 
@@ -18,7 +21,12 @@ public:
 
     double getSpeed()
     {
-        return nominalSpeed + joy->GetRawAxis(3) * (1 - nominalSpeed);
+        return nominalSpeed + joy->GetRawAxis(3) * (speed - nominalSpeed);
+    }
+
+    double getRotationSpeed()
+    {
+        return nominalRotationRate + joy->GetRawAxis(3) * (rotationSpeed - nominalRotationRate);
     }
 
     double getLX()

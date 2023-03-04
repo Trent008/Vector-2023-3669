@@ -58,7 +58,7 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
-  if (xboxC.getAPressed()) {motionController.zeroYaw();}
+  if (SMPro.getMenuPressed()) {motionController.zeroYaw();}
 
   SMPro.update();
   swerve.Set(xboxC.getFieldPoseVelocity());
