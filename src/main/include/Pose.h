@@ -2,6 +2,8 @@
 #include "Vector.h"
 #include "AngleChooser.h"
 
+
+// object that contains a vector for position, and a double for angle
 class Pose{
 private:
     Vector position;
