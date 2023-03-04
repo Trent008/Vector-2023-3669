@@ -17,8 +17,11 @@ class Robot : public frc::TimedRobot
 {
 
 public:
+  // set ramp
   double robotAccel = 0.03;     // acceleration rate of the robot speed on the field
   double robotTurnAccel = 0.03; // acceleration rate of robot steering rate
+
+  // positions that the robot can be automatically set to
   Vector loadingStation = {20, 39};
   Vector cone1 = {21, 40};
   Vector cone2 = {37, 51};
@@ -26,17 +29,17 @@ public:
   Vector cube2 = {30, 45};
   Vector pole1 = {74, 18.5};
   /*
-   * the coordinates, angles, wait times, arm coordinates, suction
+   * the pose, arm coordinates, suction, wait time
    * for the autonomous routine
    */
   AutoSetpoint setpoints[15] =
       {
-          {Pose{}, {-9, 9.75}, true, 0},
-          {Pose{{0, 5}, 0}, cone2, true, 0},
-          {Pose{{0, 21.7}, 0}, cone2, true, 0},
-          {Pose{{0, 21.7}, 0}, cone2 - Vector{0,4}, true, 0},
+          {Pose{}, {-9, 9.75}, true, 0},  // grab cone
+          {Pose{{0, 5}, 0}, cone2, true, 0}, // move arm up
+          {Pose{{0, 21.7}, 0}, cone2, true, 0}, // drive forward slightly
+          {Pose{{0, 21.7}, 0}, cone2 - Vector{0,4}, true, 0}, // move cone downwards slightly
           {Pose{{0, 5}, 0}, pole1, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
+          {Pose{}, {-9, 9.75}, false, 0}, // reset
           {Pose{}, {-9, 9.75}, false, 0},
           {Pose{}, {-9, 9.75}, false, 0},
           {Pose{}, {-9, 9.75}, false, 0},
@@ -49,7 +52,7 @@ public:
       };
 
   int i = 0; // keeps track of the autonomous point index
-  int t = 0; // keeps track of the number of processer
+  int t = 0; // keeps track of the number of processer cycles
 
   frc::Joystick driveController{0};
   frc::Joystick armController{1};

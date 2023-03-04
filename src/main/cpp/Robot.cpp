@@ -33,20 +33,28 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
+  // move the swerve drive twards the next setpoint
   swerveTargeting.targetPose(setpoints[i].pose, setpoints[i].driveRate, setpoints[i].rotationRate);
-
+  // turn the pumps on/off if vacuum is low/high
   pump1.Set(arm.pumpPercent(pressure1.Get()));
   pump2.Set(arm.pumpPercent(pressure2.Get()));
+  // set the suction cups
   isHoldingCone = setpoints[i].suctionCupState;
   suctionCup1.Set(isHoldingCone);
   suctionCup2.Set(isHoldingCone);
+  // set the arm position and angle
   arm.setArmPosition(setpoints[i].armPosition, setpoints[i].wristAngle);
   arm.update();
+  // screw = j1
+  // extension = j2 
+  // twisting = j3
+  // wrist = j4
   left_J1_PID.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   right_J1_PID.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j2_PID.SetReference(arm.getJ2PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j3_PID.SetReference(arm.getj3PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j4_PID.SetReference(arm.getJ4PIDReference(), rev::CANSparkMax::ControlType::kPosition);
+  // go to next setpoint if this setpoint has been reached
   if (arm.poseReached(1) && swerveTargeting.poseReached(3, 5) && (i < 14)) {
     i++;
   }
@@ -58,13 +66,17 @@ void Robot::TeleopInit() {
 }
 
 void Robot::TeleopPeriodic() {
+  // zero the yaw if the zeroing button is pressed
   if (SMPro.getMenuPressed()) {motionController.zeroYaw();}
 
+  // get user input
   SMPro.update();
   swerve.Set(xboxC.getFieldPoseVelocity());
 
+  // run the suction pumps
   pump1.Set(arm.pumpPercent(pressure1.Get()));
   pump2.Set(arm.pumpPercent(pressure2.Get()));
+  // pickup/drop cone
   isHoldingCone = (SMPro.getCTRLPressed()) ? !isHoldingCone : isHoldingCone;
   suctionCup1.Set(isHoldingCone);
   suctionCup2.Set(isHoldingCone);

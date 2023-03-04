@@ -3,7 +3,7 @@
 
 struct AutoSetpoint
 {
-    Pose pose = Pose{};
+    Pose pose = Pose{}; // x, y, angle
     Vector armPosition = {-9, 9.75};
     bool suctionCupState = false;
     double wristAngle = 0;
