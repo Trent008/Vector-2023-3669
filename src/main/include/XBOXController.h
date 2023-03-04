@@ -79,7 +79,7 @@ public:
     // get Z Rotate axis
     double getRX()
     {
-        a = getSpeed() * joy->GetRawAxis(4);
+        a = getRotationSpeed() * joy->GetRawAxis(4);
         if (!std::signbit(a))
         {
             a -= deadband;
