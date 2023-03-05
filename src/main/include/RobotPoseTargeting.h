@@ -29,7 +29,7 @@ class RobotPoseTargeting
             poseError = target - swerve->getPose();
             swerveRate = poseError * Vector{positionProportional, angleProportional};
             swerveRate.limit(Vector{0.5, 0.5});
-            swerve->Set(swerveRate);
+            swerve->Set(swerveRate, true);
         }
 
         bool poseReached(double positionTolerance, double angleTolerance) {

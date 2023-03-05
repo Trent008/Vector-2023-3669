@@ -23,6 +23,9 @@ private:
   Vector largestVector;    // fastest module velocity to be scaled to <= 1
   Vector averagePositionChange;  // average module velocity
   Vector fieldLocation = Vector{2.4, 1.48} / 0.0254;    // field location in inches from the starting point
+  AHRS navx{frc::SPI::Port::kMXP}; // NavX V2 object
+  double navXAngle;                // angle reported from the NavX2
+  double offsetAngle;
 
 public:
   FOC* mc;    // updates the robot velocity and rotation rate
@@ -38,8 +41,10 @@ public:
   /**
    * runs the swerve modules using the values from the motion controller
    **/
-  void Set(Pose fieldPoseVelocity = {}) {
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity);
+  void Set(Pose fieldPoseVelocity = {}, bool isAutonomous = false) {
+    navXAngle = navx.GetYaw();
+
+    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180));
     for (int i = 0; i < 4; i++)     // compare all of the module velocities to find the largest
     {
       moduleTurnVector = module[i]->getTurnVector() * robotPoseVelocity.getAngle();
@@ -61,7 +66,7 @@ public:
       module[i]->Set(moduleVelocity[i]);    // drive the modules
 
       fieldwheelPositionChange = module[i]->getwheelPositionChange();   // get the wheel velocity
-      fieldwheelPositionChange.rotate(mc->getRobotAngle());  // orient the wheel velocity in the robot's direction
+      fieldwheelPositionChange.rotate(getOffsetRobotAngle(-90));  // orient the wheel velocity in the robot's direction
       averagePositionChange += fieldwheelPositionChange;   // add the wheel velocity to the total sum
     }
     averagePositionChange /= 4; // find the average position change
@@ -70,11 +75,25 @@ public:
     fieldLocation += averagePositionChange;  // adds the distance travelled this cycle to the total distance to find the position
   }
 
+  /**
+   * Returns:
+   * NavX2 yaw angle
+   * -180 - 180 degrees
+   * */
+  double getOffsetRobotAngle(double offset) {
+    offsetAngle = navXAngle + offset;
+    return (offsetAngle > 180) ? offsetAngle - 360 : (offsetAngle < 180) ? offsetAngle + 360 : offsetAngle;
+  }
+
   void setPosition(Vector position) {
     fieldLocation = position;
   }
 
+  void zeroYaw() {
+    navx.ZeroYaw();
+  }
+
   Pose getPose() {
-    return Pose{fieldLocation, mc->getRobotAngle()};
+    return Pose{fieldLocation, getOffsetRobotAngle(-90)};
   }
 };

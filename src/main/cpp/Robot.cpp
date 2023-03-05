@@ -29,7 +29,7 @@ void Robot::AutonomousInit() {
   driveMotor2.SetSelectedSensorPosition(0);
   driveMotor3.SetSelectedSensorPosition(0);
   driveMotor4.SetSelectedSensorPosition(0);
-  motionController.zeroYaw();
+  swerve.zeroYaw();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -67,7 +67,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   // zero the yaw if the zeroing button is pressed
-  if (SMPro.getMenuPressed()) {motionController.zeroYaw();}
+  if (SMPro.getMenuPressed()) {swerve.zeroYaw();}
 
   // get user input
   SMPro.update();
