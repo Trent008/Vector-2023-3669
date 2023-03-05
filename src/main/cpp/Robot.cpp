@@ -71,6 +71,11 @@ void Robot::TeleopPeriodic() {
 
   // get user input
   SMPro.update();
+  if (limelight.GetRobotPose().getPosition() - swerve.getPose().getPosition() < 24) {
+    swerve.setPosition(limelight.GetRobotPose().getPosition());
+  }
+  frc::SmartDashboard::PutNumber("x", swerve.getPose().getPosition().getX());
+  frc::SmartDashboard::PutNumber("y", swerve.getPose().getPosition().getY());
   swerve.Set(xboxC.getFieldPoseVelocity());
 
   // run the suction pumps

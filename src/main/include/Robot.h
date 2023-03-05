@@ -12,6 +12,7 @@
 #include "ArmController.h"
 #include "RobotPoseTargeting.h"
 #include "AutoSetpoint.h"
+#include "Limelight.h"
 
 class Robot : public frc::TimedRobot
 {
@@ -34,25 +35,27 @@ public:
    */
   AutoSetpoint setpoints[15] =
       {
-          {Pose{}, {-9, 9.75}, true, 0},  // grab cone
-          {Pose{{0, 5}, 0}, cone2, true, 0}, // move arm up
-          {Pose{{0, 21.7}, 0}, cone2, true, 0}, // drive forward slightly
-          {Pose{{0, 21.7}, 0}, cone2 - Vector{0,4}, true, 0}, // move cone downwards slightly
-          {Pose{{0, 5}, 0}, pole1, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0}, // reset
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
-          {Pose{}, {-9, 9.75}, false, 0},
+          {Pose{{94, 58}, -90}, {-9, 9.75}, 0},
+          {Pose{{94, 58}, -90}, {-9, 9.75}, 0},
+          {Pose{{94, 50}, -90}, {-9, 9.75}, 0}, 
+          {Pose{{94, 58}, -90}, {-9, 9.75}, 0},
+          {Pose{{94, 58}, -90}, {-9, 9.75}, 0},
+          {}, // reset
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
+          {},
       };
 
   int i = 0; // keeps track of the autonomous point index
   int t = 0; // keeps track of the number of processer cycles
+
+  Limelight limelight{true};
 
   frc::Joystick driveController{0};
   frc::Joystick armController{1};

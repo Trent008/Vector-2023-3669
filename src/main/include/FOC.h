@@ -46,9 +46,8 @@ public:
      * NavX2 yaw angle
      * -180 - 180 degrees
      * */
-    double getRobotAngle()
-    {
-        return navXAngle;
+    double getRobotAngle() {
+        return (navXAngle-90<-180) ? navXAngle + 270 : navXAngle - 90;
     }
 
     void zeroYaw()
