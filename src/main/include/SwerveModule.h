@@ -8,19 +8,19 @@
 class SwerveModule
 {
 private:
-    Vector turnVector;     // vector corresponding to the way the rotation rate adds to the swerve module velocity
-    double wheelDirection = 0;  // direction of the wheel depending on whether the wheel is drivinging forward or backward
+    Vector turnVector;         // vector corresponding to the way the rotation rate adds to the swerve module velocity
+    double wheelDirection = 0; // direction of the wheel depending on whether the wheel is drivinging forward or backward
     double wheelSpeed = 0;
     double angleError = 0;
-    double steeringMotorP;  // proportional value determines how quickly the steering responds to angle setpoints
+    double steeringMotorP; // proportional value determines how quickly the steering responds to angle setpoints
     double option[4];
     double angleWheel, angleSetpoint;
     double lastPosition = 0;
     double currentPosition;
     AngleChooser angleChooser{};
-    WPI_TalonFX* driveMotor;
-    rev::CANSparkMax* steeringMotor;
-    CANCoder* wheelEncoder;
+    WPI_TalonFX *driveMotor;
+    rev::CANSparkMax *steeringMotor;
+    CANCoder *wheelEncoder;
     Vector wheelPositionChange;
 
 public:
@@ -28,7 +28,7 @@ public:
      * parameters posX and posY set the position of
      * the module relative to the center of the robot
      */
-    SwerveModule(WPI_TalonFX* driveMotor, rev::CANSparkMax* steeringMotor, CANCoder* wheelEncoder, Vector position)
+    SwerveModule(WPI_TalonFX *driveMotor, rev::CANSparkMax *steeringMotor, CANCoder *wheelEncoder, Vector position)
     {
         steeringMotorP = 1;
         this->driveMotor = driveMotor;
@@ -49,9 +49,10 @@ public:
         wheelSpeed = wheelDirection * abs(velocity);
     }
 
-    void Set(Vector velocity) {  // todo: change to velocity mode
+    void Set(Vector velocity)
+    {
         findSpeedAndAngleError(velocity);
-        driveMotor->Set(wheelSpeed);//ControlMode::Velocity, wheelSpeed*6380*2048/600);
+        driveMotor->Set(wheelSpeed);
         steeringMotor->Set(angleError * (-steeringMotorP) / 180);
         currentPosition = driveMotor->GetSelectedSensorPosition(0);
         wheelPositionChange = Polar(currentPosition - lastPosition, angleWheel);
@@ -63,11 +64,13 @@ public:
         return turnVector;
     }
 
-    double getWheelSpeed() {
+    double getWheelSpeed()
+    {
         return wheelSpeed;
     }
 
-    Vector getwheelPositionChange() {
-    return wheelPositionChange;
+    Vector getwheelPositionChange()
+    {
+        return wheelPositionChange;
     }
 };

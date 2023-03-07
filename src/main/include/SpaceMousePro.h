@@ -23,20 +23,26 @@ public:
      * resets the spaceMouse last position variable
      * to the current output
      * */
-    void initialize() {
-        for (int i = 0; i < 6; i++) {
+    void initialize()
+    {
+        for (int i = 0; i < 6; i++)
+        {
             lastValue[i] = joy->GetRawAxis(i);
         }
     }
 
-    void update() {
-        for (int i = 0; i < 6; i++) {
+    void update()
+    {
+        for (int i = 0; i < 6; i++)
+        {
             value[i] = joy->GetRawAxis(i);
             change[i] = value[i] - lastValue[i];
-            if (change[i] > 1) {
+            if (change[i] > 1)
+            {
                 change[i] -= 2;
             }
-            if (change[i] < -1) {
+            if (change[i] < -1)
+            {
                 change[i] += 2;
             }
             lastValue[i] = value[i];
@@ -44,63 +50,78 @@ public:
         }
     }
 
-    double getAxis(int number) {
+    double getAxis(int number)
+    {
         return change[number];
     }
 
-    double getX() {
+    double getX()
+    {
         return getAxis(0);
     }
 
-    double getY() {
+    double getY()
+    {
         return -getAxis(1);
     }
 
-    double getZ() {
+    double getZ()
+    {
         return -getAxis(2);
     }
 
-    double getXR() {
-        return 8*getAxis(3);
+    double getXR()
+    {
+        return 8 * getAxis(3);
     }
 
-    double getYR() {
-        return -8*getAxis(4);
+    double getYR()
+    {
+        return -8 * getAxis(4);
     }
 
-    double getZR() {
-        return 8*getAxis(5);
+    double getZR()
+    {
+        return 8 * getAxis(5);
     }
 
-    bool getMenuPressed() {
+    bool getMenuPressed()
+    {
         return joy->GetRawButtonPressed(1);
     }
 
-    bool getCTRLPressed() {
+    bool getCTRLPressed()
+    {
         return joy->GetRawButtonPressed(14);
     }
 
-    bool getAltPressed() {
+    bool getAltPressed()
+    {
         return joy->GetRawButtonPressed(12);
     }
 
-    bool getESCPressed() {
+    bool getESCPressed()
+    {
         return joy->GetRawButtonPressed(11);
     }
 
-    bool get1Pressed() {
+    bool get1Pressed()
+    {
         return joy->GetRawButtonPressed(7);
     }
-    
-    bool get2Pressed() {
+
+    bool get2Pressed()
+    {
         return joy->GetRawButtonPressed(8);
     }
-    
-    bool get3Pressed() {
+
+    bool get3Pressed()
+    {
         return joy->GetRawButtonPressed(9);
     }
-    
-    bool get4Pressed() {
+
+    bool get4Pressed()
+    {
         return joy->GetRawButtonPressed(10);
     }
 };

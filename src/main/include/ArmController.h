@@ -50,7 +50,7 @@ public:
     void update(Vector velocityTarget = {}, double j3Velocity = 0, double j4Velocity = 0)
     {
 
-    /* ------------- limits the target position ------------- */
+        /* ------------- limits the target position ------------- */
         targetPosition += velocityTarget;
         if ((targetPosition.getY() < deck) && (targetPosition.getY() > floor) && (targetPosition.getX() < frame))
         {
@@ -72,7 +72,7 @@ public:
             targetPosition = Vector{frame, floor};
         }
 
-    /* -- moves the currentPosition toward the target currentPosition -- */
+        /* -- moves the currentPosition toward the target currentPosition -- */
         error = targetPosition - currentPosition;
         if (error > 2 * positionRate)
         {
@@ -83,7 +83,7 @@ public:
             currentPosition += error * 0.5;
         }
 
-    /* ------------- limits the current position ------------- */
+        /* ------------- limits the current position ------------- */
         if ((currentPosition.getY() < deck) && (currentPosition.getY() > floor) && (currentPosition.getX() < frame))
         {
             if (std::abs(currentPosition.getY() - deck) < std::abs(currentPosition.getX() - frame))
@@ -104,7 +104,7 @@ public:
             currentPosition = Vector{frame, floor};
         }
 
-    /* ------------- set j4 position ------------- */
+        /* ------------- set j4 position ------------- */
         j4UserSetpoint += j4Velocity;
         j4Setpoint = angle(currentPosition) - 90 - startingJ4Position + j4UserSetpoint;
         if (j4Setpoint > j4_Max)
@@ -118,52 +118,66 @@ public:
             j4Setpoint = j4_Min;
         }
 
-    /* --------- integrate toward new j4 position --------- */
+        /* --------- integrate toward new j4 position --------- */
         j4Error = j4Setpoint - j4Current;
-        if (std::abs(j4Error) > 2 * j4Rate) {
+        if (std::abs(j4Error) > 2 * j4Rate)
+        {
             j4Current += j4Rate * j4Error / std::abs(j4Error);
         }
-        else {
+        else
+        {
             j4Current += j4Error / 2;
         }
 
-    /* ------------- set j3 position ------------- */
+        /* ------------- set j3 position ------------- */
         j3Setpoint += j3Velocity;
-        if (currentPosition.getX() < 26) { j3Setpoint = 0; }
-        if (j3Setpoint > 90) { j3Setpoint = 90; }
-        if (j3Setpoint < -90) { j3Setpoint = -90; }
+        if (currentPosition.getX() < 26)
+        {
+            j3Setpoint = 0;
+        }
+        if (j3Setpoint > 90)
+        {
+            j3Setpoint = 90;
+        }
+        if (j3Setpoint < -90)
+        {
+            j3Setpoint = -90;
+        }
 
-    /* ------------- integrate toward new j3 position ------------- */
+        /* ------------- integrate toward new j3 position ------------- */
         j3Error = j3Setpoint - j3Current;
-        if (std::abs(j3Error) > j3Rate) {
+        if (std::abs(j3Error) > j3Rate)
+        {
             j3Current += j3Rate * j3Error / std::abs(j3Error);
         }
-        else {
+        else
+        {
             j3Current += j3Error / 2;
         }
-
     }
 
-    double getJ1PIDReference()
+    double GetJ1()
     {
         j1SetpointInches = sqrt(356 - 4 * sqrt(7345) * cos(atan2(currentPosition.getX(), -currentPosition.getY()) + atan(1.5 / 15.5) - atan(3.0 / 11))) - startingJ1Length;
-        j1SetpointInches = (j1SetpointInches > j1_Max) ? j1_Max : (j1SetpointInches < j1_Min) ? j1_Min : j1SetpointInches;
+        j1SetpointInches = (j1SetpointInches > j1_Max) ? j1_Max : (j1SetpointInches < j1_Min) ? j1_Min
+                                                                                              : j1SetpointInches;
         return j1SetpointInches * (50.0 / 7);
     }
 
-    double getJ2PIDReference()
+    double GetJ2()
     {
         j2Length = abs(currentPosition) - abs(startPosition);
-        j2Length = (j2Length > j2_Max) ? j2_Max : (j2Length < j2_Min) ? j2_Min : j2Length;
+        j2Length = (j2Length > j2_Max) ? j2_Max : (j2Length < j2_Min) ? j2_Min
+                                                                      : j2Length;
         return j2Length * (5 * 25.4 / 18);
     }
 
-    double getj3PIDReference()
+    double GetJ3()
     {
         return j3Current * (5.0 / 36);
     }
 
-    double getJ4PIDReference()
+    double GetJ4()
     {
         return j4Current * (5.0 / 36);
     }
@@ -175,11 +189,16 @@ public:
         this->j3Setpoint = j3Setpoint;
     }
 
-    bool poseReached(double tolerance) {
+    bool poseReached(double tolerance)
+    {
         return error < tolerance;
     }
 
-    double pumpPercent(bool pressure)
+    /**
+     * gets the vacuum pump percent output
+     * given the state of the pressure switch
+     */
+    double getPump(bool pressure)
     {
         return ((pressure) ? 0.5 : 0);
     }

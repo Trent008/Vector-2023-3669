@@ -123,11 +123,12 @@ public:
         return a;
     }
 
-    Pose getFieldVelocity() {
+    Pose getFieldVelocity()
+    {
         return Pose{Vector{getLX(), getLY()}, getRX()};
     }
 
-    bool getAPressed() 
+    bool getAPressed()
     {
         return joy->GetRawButtonPressed(1);
     }

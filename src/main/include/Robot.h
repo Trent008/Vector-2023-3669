@@ -37,7 +37,7 @@ public:
       {
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0}, 
+          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0}, // reset
@@ -104,19 +104,19 @@ public:
 
   // arm extension motor and PID controller
   rev::CANSparkMax j2_NEO{43, rev::CANSparkMax::MotorType::kBrushless};
-  rev::SparkMaxPIDController j2_PID = j2_NEO.GetPIDController();
+  rev::SparkMaxPIDController j2 = j2_NEO.GetPIDController();
 
   // end-of-arm motors and PID controllers
   rev::CANSparkMax j3_NEO{44, rev::CANSparkMax::MotorType::kBrushless};
-  rev::SparkMaxPIDController j3_PID = j3_NEO.GetPIDController();
+  rev::SparkMaxPIDController j3 = j3_NEO.GetPIDController();
   rev::CANSparkMax j4_NEO{45, rev::CANSparkMax::MotorType::kBrushless};
-  rev::SparkMaxPIDController j4_PID = j4_NEO.GetPIDController();
+  rev::SparkMaxPIDController j4 = j4_NEO.GetPIDController();
 
   // vacuum pumps
   WPI_TalonSRX pump1{51};
   WPI_TalonSRX pump2{52};
-  frc::DigitalInput pressure1{0};
-  frc::DigitalInput pressure2{1};
+  frc::DigitalInput pressure1{0}; // right pressure switch digital input
+  frc::DigitalInput pressure2{1}; // left pressure switch digital input
   frc::Solenoid suctionCup1{frc::PneumaticsModuleType::REVPH, 0};
   frc::Solenoid suctionCup2{frc::PneumaticsModuleType::REVPH, 15};
   bool isHoldingCone = false;
