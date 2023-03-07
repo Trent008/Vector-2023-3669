@@ -22,7 +22,11 @@ void Robot::RobotInit() {
   j4_PID.SetP(0.1);
 }
 
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+  frc::SmartDashboard::PutNumber("x", swerve.getPosition().getX());
+  frc::SmartDashboard::PutNumber("y", swerve.getPosition().getY());
+  frc::SmartDashboard::PutNumber("a", swerve.getOffsetRobotAngle(-90));
+}
 
 void Robot::AutonomousInit() {
   driveMotor1.SetSelectedSensorPosition(0);
@@ -34,8 +38,11 @@ void Robot::AutonomousInit() {
 
 void Robot::AutonomousPeriodic() {
   // move the swerve drive twards the next setpoint
+  if (limelight.GetRobotPosition() - swerve.getPosition() < 24) {
+    swerve.setPosition(limelight.GetRobotPosition());
+  }
   swerveTargeting.targetPose(setpoints[i].pose, setpoints[i].driveRate, setpoints[i].rotationRate);
-  // turn the pumps on/off if vacuum is low/high
+    // turn the pumps on/off if vacuum is low/high
   pump1.Set(arm.pumpPercent(pressure1.Get()));
   pump2.Set(arm.pumpPercent(pressure2.Get()));
   // set the suction cups
@@ -71,12 +78,13 @@ void Robot::TeleopPeriodic() {
 
   // get user input
   SMPro.update();
-  if (limelight.GetRobotPose().getPosition() - swerve.getPose().getPosition() < 24) {
-    swerve.setPosition(limelight.GetRobotPose().getPosition());
+  // if (limelight.GetRobotPosition() - swerve.getPosition() < 24) {
+  //   swerve.setPosition(limelight.GetRobotPosition());
+  // }
+  if (limelight.GetRobotPosition() - swerve.getPosition() < 24) {
+    swerve.setPosition(limelight.GetRobotPosition());
   }
-  frc::SmartDashboard::PutNumber("x", swerve.getPose().getPosition().getX());
-  frc::SmartDashboard::PutNumber("y", swerve.getPose().getPosition().getY());
-  swerve.Set(xboxC.getFieldPoseVelocity());
+  swerve.Set(xboxC.getFieldPoseVelocity(),1);
 
   // run the suction pumps
   pump1.Set(arm.pumpPercent(pressure1.Get()));

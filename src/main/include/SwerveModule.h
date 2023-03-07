@@ -54,7 +54,7 @@ public:
         driveMotor->Set(wheelSpeed);//ControlMode::Velocity, wheelSpeed*6380*2048/600);
         steeringMotor->Set(angleError * (-steeringMotorP) / 180);
         currentPosition = driveMotor->GetSelectedSensorPosition(0);
-        wheelPositionChange = Polar(currentPosition - lastPosition, wheelEncoder->GetAbsolutePosition());
+        wheelPositionChange = Polar(currentPosition - lastPosition, angleWheel);
         lastPosition = currentPosition;
     }
 
@@ -68,6 +68,7 @@ public:
     }
 
     Vector getwheelPositionChange() {
-        return wheelPositionChange;
+        if(wheelPositionChange < 5000) { return wheelPositionChange; }
+        return Vector{};
     }
 };

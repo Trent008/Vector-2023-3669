@@ -35,7 +35,7 @@ public:
         return z;
     }
     
-    Pose GetRobotPose() {
-        return Pose{Vector{GetRobotX(), GetRobotY()} / 0.0254, GetRobotAngle()};
+    Vector GetRobotPosition() {
+        return Vector{GetRobotX(), GetRobotY()} / 0.0254;
     }
 };

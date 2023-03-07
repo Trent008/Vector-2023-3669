@@ -22,7 +22,7 @@ private:
   Vector fieldwheelPositionChange; // stores the velocity of each wheel in encoders/100ms in turn
   Vector largestVector;    // fastest module velocity to be scaled to <= 1
   Vector averagePositionChange;  // average module velocity
-  Vector fieldLocation = Vector{2.4, 1.48} / 0.0254;    // field location in inches from the starting point
+  Vector fieldLocation = Vector{90, 54.7};    // field location in inches from the starting point
   AHRS navx{frc::SPI::Port::kMXP}; // NavX V2 object
   double navXAngle;                // angle reported from the NavX2
   double offsetAngle;
@@ -45,6 +45,7 @@ public:
     navXAngle = navx.GetYaw();
 
     robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180));
+    largestVector = Vector{1,0};
     for (int i = 0; i < 4; i++)     // compare all of the module velocities to find the largest
     {
       moduleTurnVector = module[i]->getTurnVector() * robotPoseVelocity.getAngle();
@@ -59,10 +60,7 @@ public:
 
     for (int i = 0; i < 4; i++)  // loop through the module indexes again
     {
-      if (largestVector > 1.0) {
-        moduleVelocity[i] /= abs(largestVector);    // scale the vector sizes down to 1
-      }
-      
+      moduleVelocity[i] /= abs(largestVector);    // scale the vector sizes down to 1
       module[i]->Set(moduleVelocity[i]);    // drive the modules
 
       fieldwheelPositionChange = module[i]->getwheelPositionChange();   // get the wheel velocity
@@ -82,7 +80,7 @@ public:
    * */
   double getOffsetRobotAngle(double offset) {
     offsetAngle = navXAngle + offset;
-    return (offsetAngle > 180) ? offsetAngle - 360 : (offsetAngle < 180) ? offsetAngle + 360 : offsetAngle;
+    return (offsetAngle > 180) ? offsetAngle - 360 : (offsetAngle < -180) ? offsetAngle + 360 : offsetAngle;
   }
 
   void setPosition(Vector position) {
@@ -95,5 +93,9 @@ public:
 
   Pose getPose() {
     return Pose{fieldLocation, getOffsetRobotAngle(-90)};
+  }
+
+  Vector getPosition() {
+    return fieldLocation;
   }
 };

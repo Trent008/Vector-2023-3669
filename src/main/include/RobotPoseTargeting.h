@@ -13,7 +13,7 @@ class RobotPoseTargeting
         Pose poseError;      // how fast the robot needs to move to get to its next position setpoint
         Pose distanceToSetpointPose;
         Pose swerveRate;
-        Pose target;
+        Pose target = Pose{Vector{90, 54.7}, -90};
         SwerveDrive *swerve;
 
     public:
