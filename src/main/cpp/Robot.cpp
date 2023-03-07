@@ -15,8 +15,8 @@ void Robot::RobotInit() {
   driveMotor4.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
 
   // arm PID config
-  left_J1_PID.SetP(0.1);
-  right_J1_PID.SetP(0.1);
+  left_J1.SetP(0.1);
+  right_J1.SetP(0.1);
   j2_PID.SetP(0.1);
   j3_PID.SetP(0.1);
   j4_PID.SetP(0.1);
@@ -56,8 +56,8 @@ void Robot::AutonomousPeriodic() {
   // extension = j2 
   // twisting = j3
   // wrist = j4
-  left_J1_PID.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
-  right_J1_PID.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
+  left_J1.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
+  right_J1.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j2_PID.SetReference(arm.getJ2PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j3_PID.SetReference(arm.getj3PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j4_PID.SetReference(arm.getJ4PIDReference(), rev::CANSparkMax::ControlType::kPosition);
@@ -78,13 +78,10 @@ void Robot::TeleopPeriodic() {
 
   // get user input
   SMPro.update();
-  // if (limelight.GetRobotPosition() - swerve.getPosition() < 24) {
-  //   swerve.setPosition(limelight.GetRobotPosition());
-  // }
   if (limelight.GetRobotPosition() - swerve.getPosition() < 24) {
     swerve.setPosition(limelight.GetRobotPosition());
   }
-  swerve.Set(xboxC.getFieldPoseVelocity(),1);
+  swerve.Set(xboxC.getFieldVelocity());
 
   // run the suction pumps
   pump1.Set(arm.pumpPercent(pressure1.Get()));
@@ -95,8 +92,8 @@ void Robot::TeleopPeriodic() {
   suctionCup2.Set(isHoldingCone);
 
   // set arm PID references
-  left_J1_PID.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
-  right_J1_PID.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
+  left_J1.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
+  right_J1.SetReference(arm.getJ1PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j2_PID.SetReference(arm.getJ2PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j3_PID.SetReference(arm.getj3PIDReference(), rev::CANSparkMax::ControlType::kPosition);
   j4_PID.SetReference(arm.getJ4PIDReference(), rev::CANSparkMax::ControlType::kPosition);

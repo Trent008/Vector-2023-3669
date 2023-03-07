@@ -24,7 +24,7 @@ class RobotPoseTargeting
         }
 
         void targetPose(Pose setpoint, double driveRate, double rotationRate) {
-            target.moveTowardPose(setpoint, driveRate / 50, rotationRate / 50);
+            target.moveToward(setpoint, driveRate / 50, rotationRate / 50);
             distanceToSetpointPose = setpoint - target;
             poseError = target - swerve->getPose();
             swerveRate = poseError * Vector{positionProportional, angleProportional};

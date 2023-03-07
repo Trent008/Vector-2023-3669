@@ -123,7 +123,7 @@ public:
         return a;
     }
 
-    Pose getFieldPoseVelocity() {
+    Pose getFieldVelocity() {
         return Pose{Vector{getLX(), getLY()}, getRX()};
     }
 

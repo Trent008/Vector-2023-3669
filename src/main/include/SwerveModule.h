@@ -68,7 +68,6 @@ public:
     }
 
     Vector getwheelPositionChange() {
-        if(wheelPositionChange < 5000) { return wheelPositionChange; }
-        return Vector{};
+    return wheelPositionChange;
     }
 };

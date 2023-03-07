@@ -28,13 +28,23 @@ public:
      *  sets the field oriented and smoothed x velocity,
      *  y velocity, and rotation rate for the robot
      * */
-    Pose getRobotPoseVelocity(Pose velocitySetpoint, double navXAngle)
+    Pose getRobotPoseVelocity(Pose velocitySetpoint, double navXAngle, bool isAccelerated)
     {
-        fieldVelocity.moveTowardPose(velocitySetpoint, velocityAccelleration, rotationalAccelleration);
+        if(isAccelerated)
+        { 
+            fieldVelocity.moveToward(velocitySetpoint, velocityAccelleration, rotationalAccelleration);
+            /**------------Field Oriented Control------------**/
+            robotVelocity = fieldVelocity.getPosition();
+            robotVelocity.rotate(-navXAngle);
+            return Pose{robotVelocity, fieldVelocity.getAngle()};
+        }
+        else
+        {
+            robotVelocity = velocitySetpoint.getPosition();
+            robotVelocity.rotate(-navXAngle);
+            return Pose{robotVelocity, velocitySetpoint.getAngle()};
+        }
         
-        /**------------Field Oriented Control------------**/
-        robotVelocity = fieldVelocity.getPosition();
-        robotVelocity.rotate(-navXAngle);
-        return Pose{robotVelocity, fieldVelocity.getAngle()};
+        
     }
 };

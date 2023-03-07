@@ -44,7 +44,7 @@ public:
   void Set(Pose fieldPoseVelocity = {}, bool isAutonomous = false) {
     navXAngle = navx.GetYaw();
 
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180));
+    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180), !isAutonomous);
     largestVector = Vector{1,0};
     for (int i = 0; i < 4; i++)     // compare all of the module velocities to find the largest
     {

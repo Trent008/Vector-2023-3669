@@ -99,8 +99,8 @@ public:
   // leadscrew motors and PID controllers
   rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax right_J1_NEO{42, rev::CANSparkMax::MotorType::kBrushless};
-  rev::SparkMaxPIDController left_J1_PID = left_J1_NEO.GetPIDController();
-  rev::SparkMaxPIDController right_J1_PID = right_J1_NEO.GetPIDController();
+  rev::SparkMaxPIDController left_J1 = left_J1_NEO.GetPIDController();
+  rev::SparkMaxPIDController right_J1 = right_J1_NEO.GetPIDController();
 
   // arm extension motor and PID controller
   rev::CANSparkMax j2_NEO{43, rev::CANSparkMax::MotorType::kBrushless};

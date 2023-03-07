@@ -59,7 +59,7 @@ public:
         return angle;
     }
 
-    void moveTowardPose(Pose target, double positionSpeed, double angleSpeed) {
+    void moveToward(Pose target, double positionSpeed, double angleSpeed) {
         positionError = target.position - position;
         if (abs(positionError) > 2 * positionSpeed) {
             position += positionError / abs(positionError) * positionSpeed;
