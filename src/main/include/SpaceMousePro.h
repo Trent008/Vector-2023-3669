@@ -7,9 +7,9 @@ class SpaceMousePro
 private:
     frc::Joystick *joy;
     double speed;
+    double deadband = 0.001;
     double change[6];
     double lastValue[6], value[6];
-    int cycles = 0;
 
 public:
     // SpaceMouse as joystick
@@ -44,6 +44,10 @@ public:
             if (change[i] < -1)
             {
                 change[i] += 2;
+            }
+            if (std::abs(change[i]) < deadband)
+            {
+                change[i] = 0;
             }
             lastValue[i] = value[i];
             change[i] *= speed;
