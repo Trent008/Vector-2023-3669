@@ -23,7 +23,7 @@ public:
   double robotTurnAccel = 0.03; // acceleration rate of robot steering rate
 
   // positions that the robot can be automatically set to
-  Vector loadingStation = {20, 39};
+  Vector loadingStation = {15, 43};
   Vector cone1 = {21, 40};
   Vector cone2 = {37, 51};
   Vector cube1 = {13, 30};

@@ -109,6 +109,11 @@ public:
         return joy->GetRawButtonPressed(11);
     }
 
+    bool getShiftPressed()
+    {
+        return joy->GetRawButtonPressed(13);
+    }
+
     bool get1Pressed()
     {
         return joy->GetRawButtonPressed(7);

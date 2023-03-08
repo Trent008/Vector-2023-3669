@@ -129,16 +129,19 @@ void Robot::TeleopPeriodic()
   {
     arm.setArmPosition(cube2, 0, 0);
   }
-  if (SMPro.getESCPressed())
+  if (SMPro.getShiftPressed())
   {
     isHoming = true;
     arm.setArmPosition(Vector{8, 14}, 10, 0);
+  }
+  if (SMPro.getESCPressed()) {
+    arm.setArmPosition(loadingStation, -8);
   }
   arm.update(Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
   if (isHoming && arm.poseReached(1))
   {
     isHoming = false;
-    arm.setArmPosition({-9, 9.75}, 10, 0);
+    arm.setArmPosition({-9, 11}, 10, 0);
   }
 }
 
