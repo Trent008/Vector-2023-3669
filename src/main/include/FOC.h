@@ -28,9 +28,9 @@ public:
      *  sets the field oriented and smoothed x velocity,
      *  y velocity, and rotation rate for the robot
      * */
-    Pose getRobotPoseVelocity(Pose velocitySetpoint, double navXAngle, bool isAccelerated)
+    Pose getRobotPoseVelocity(Pose velocitySetpoint, double navXAngle, bool isAutonomous)
     {
-        if (isAccelerated)
+        if (!isAutonomous)
         {
             fieldVelocity.moveToward(velocitySetpoint, velocityAccelleration, rotationalAccelleration);
             /**------------Field Oriented Control------------**/

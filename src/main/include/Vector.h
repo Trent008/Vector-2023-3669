@@ -9,20 +9,10 @@ private:
 
 public:
     /**
-     * x = 0
-     * y = 0
-     **/
-    Vector()
-    {
-        this->x = 0;
-        this->y = 0;
-    }
-
-    /**
      * vector.x = x
      * vector.y = y
      **/
-    Vector(double x, double y)
+    Vector(double x = 0, double y = 0)
     {
         this->x = x;
         this->y = y;

@@ -1,7 +1,7 @@
 #pragma once
 #include "FOC.h"
 #include "SwerveModule.h"
-#include "Pose.h"
+#include "Parameters.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 
 /**
@@ -21,7 +21,7 @@ private:
   Vector fieldwheelPositionChange;         // stores the velocity of each wheel in encoders/100ms in turn
   Vector largestVector;                    // fastest module velocity to be scaled to <= 1
   Vector averagePositionChange;            // average module velocity
-  Vector fieldLocation = Vector{90, 54.7}; // field location in inches from the starting point
+  Vector fieldLocation = params.startingPose.getPosition(); // field location in inches from the starting point
   AHRS navx{frc::SPI::Port::kMXP};         // NavX V2 object
   double navXAngle;                        // angle reported from the NavX2
   double offsetAngle;
@@ -45,7 +45,7 @@ public:
   {
     navXAngle = navx.GetYaw();
 
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180), !isAutonomous);
+    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180), isAutonomous);
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {
@@ -70,8 +70,9 @@ public:
     }
     averagePositionChange /= 4; // find the average position change
     averagePositionChange *= (1 / 8.41 / 2048 * M_PI * 3.9);
-
-    fieldLocation += averagePositionChange; // adds the distance travelled this cycle to the total distance to find the position
+    if (averagePositionChange < 5) {
+      fieldLocation += averagePositionChange; // adds the distance travelled this cycle to the total distance to find the position
+    }
   }
 
   /**

@@ -54,7 +54,7 @@ void Robot::AutonomousPeriodic()
   suctionCup2.Set(isHoldingCone);
   // set the arm position and angle
   arm.setArmPosition(setpoints[i].armPosition, setpoints[i].wristAngle);
-  arm.update();
+  arm.update(t > 25);
   // screw = j1
   // extension = j2
   // twisting = j3
@@ -137,7 +137,7 @@ void Robot::TeleopPeriodic()
   if (SMPro.getESCPressed()) {
     arm.setArmPosition(loadingStation, -8);
   }
-  arm.update(Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
+  arm.update(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
   if (isHoming && arm.poseReached(1))
   {
     isHoming = false;

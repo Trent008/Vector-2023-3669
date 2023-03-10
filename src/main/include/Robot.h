@@ -13,6 +13,7 @@
 #include "RobotPoseTargeting.h"
 #include "AutoSetpoint.h"
 #include "Limelight.h"
+#include "Parameters.h"
 
 class Robot : public frc::TimedRobot
 {
@@ -28,20 +29,23 @@ public:
   Vector cone2 = {37, 51};
   Vector cube1 = {13, 30};
   Vector cube2 = {30, 45};
-  Vector pole1 = {74, 18.5};
+  Vector p1 = {74, 18.5};
+  Vector offset = {6};
+  Vector dropCone = {0, -5}
+
   /*
    * the pose, arm coordinates, suction, wait time
    * for the autonomous routine
    */
   AutoSetpoint setpoints[15] =
       {
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0}, // reset
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
+          {Pose{p1+offset, -90}, {-9, 9.75}, 1},
+          {Pose{p1+offset, -90}, cone2, 1},
+          {Pose{p1, -90}, cone2, 1},
+          {Pose{p1, -90}, cone2+dropCone, 1},
+          {Pose{p1+offset, -90}, cone2+dropCone, 0},
+          {Pose{p1+offset, -90}, {-9, 9.75}, 0}, // reset
+          {Pose{p1+offset, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
           {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
@@ -94,7 +98,7 @@ public:
   FOC motionController{robotAccel, robotTurnAccel};
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
   SwerveDrive swerve{&motionController, modules};
-  RobotPoseTargeting swerveTargeting{&swerve, 0.04, 0.007};
+  RobotPoseTargeting swerveTargeting{&swerve, 0.03, 0.007};
 
   // leadscrew motors and PID controllers
   rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};

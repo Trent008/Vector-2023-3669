@@ -13,12 +13,13 @@ private:
     Pose poseError;              // how fast the robot needs to move to get to its next position setpoint
     Pose distanceToSetpointPose;
     Pose swerveRate;
-    Pose target = Pose{Vector{90, 54.7}, -90};
+    Pose target;
     SwerveDrive *swerve;
 
 public:
     RobotPoseTargeting(SwerveDrive *swerve, double positionProportional, double angleProportional)
-    {
+    {   
+        target = params.startingPose;
         this->positionProportional = positionProportional;
         this->angleProportional = angleProportional;
         this->swerve = swerve;

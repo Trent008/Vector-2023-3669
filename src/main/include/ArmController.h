@@ -47,7 +47,7 @@ public:
         j4_Min = j4_Max - 180;
     }
 
-    void update(Vector velocityTarget = {}, double j3Velocity = 0, double j4Velocity = 0)
+    void update(bool enabled, Vector velocityTarget = {}, double j3Velocity = 0, double j4Velocity = 0)
     {
 
         /* ------------- limits the target position ------------- */
@@ -71,88 +71,89 @@ public:
         {
             targetPosition = Vector{frame, floor};
         }
-
-        /* -- moves the currentPosition toward the target currentPosition -- */
-        error = targetPosition - currentPosition;
-        if (error > 2 * positionRate)
-        {
-            currentPosition += error * positionRate / abs(error);
-        }
-        else
-        {
-            currentPosition += error * 0.5;
-        }
-
-        /* ------------- limits the current position ------------- */
-        if ((currentPosition.getY() < deck) && (currentPosition.getY() > floor) && (currentPosition.getX() < frame))
-        {
-            if (std::abs(currentPosition.getY() - deck) < std::abs(currentPosition.getX() - frame))
+        if (enabled) {
+            /* -- moves the currentPosition toward the target currentPosition -- */
+            error = targetPosition - currentPosition;
+            if (error > 2 * positionRate)
             {
-                currentPosition.setY(deck);
+                currentPosition += error * positionRate / abs(error);
             }
             else
             {
-                currentPosition.setX(frame);
+                currentPosition += error * 0.5;
             }
-        }
-        else if ((currentPosition.getY() < floor) && (currentPosition.getX() > frame))
-        {
-            currentPosition.setY(floor);
-        }
-        else if ((currentPosition.getY() <= floor) && (currentPosition.getX() <= frame))
-        {
-            currentPosition = Vector{frame, floor};
-        }
 
-        /* ------------- set j4 position ------------- */
-        j4UserSetpoint += j4Velocity;
-        j4Setpoint = angle(currentPosition) - 90 - startingJ4Position + j4UserSetpoint;
-        if (j4Setpoint > j4_Max)
-        {
-            j4UserSetpoint -= j4Setpoint - j4_Max;
-            j4Setpoint = j4_Max;
-        }
-        if (j4Setpoint < j4_Min)
-        {
-            j4UserSetpoint += j4_Min - j4Setpoint;
-            j4Setpoint = j4_Min;
-        }
+            /* ------------- limits the current position ------------- */
+            if ((currentPosition.getY() < deck) && (currentPosition.getY() > floor) && (currentPosition.getX() < frame))
+            {
+                if (std::abs(currentPosition.getY() - deck) < std::abs(currentPosition.getX() - frame))
+                {
+                    currentPosition.setY(deck);
+                }
+                else
+                {
+                    currentPosition.setX(frame);
+                }
+            }
+            else if ((currentPosition.getY() < floor) && (currentPosition.getX() > frame))
+            {
+                currentPosition.setY(floor);
+            }
+            else if ((currentPosition.getY() <= floor) && (currentPosition.getX() <= frame))
+            {
+                currentPosition = Vector{frame, floor};
+            }
 
-        /* --------- integrate toward new j4 position --------- */
-        j4Error = j4Setpoint - j4Current;
-        if (std::abs(j4Error) > 2 * j4Rate)
-        {
-            j4Current += j4Rate * j4Error / std::abs(j4Error);
-        }
-        else
-        {
-            j4Current += j4Error / 2;
-        }
+            /* ------------- set j4 position ------------- */
+            j4UserSetpoint += j4Velocity;
+            j4Setpoint = angle(currentPosition) - 90 - startingJ4Position + j4UserSetpoint;
+            if (j4Setpoint > j4_Max)
+            {
+                j4UserSetpoint -= j4Setpoint - j4_Max;
+                j4Setpoint = j4_Max;
+            }
+            if (j4Setpoint < j4_Min)
+            {
+                j4UserSetpoint += j4_Min - j4Setpoint;
+                j4Setpoint = j4_Min;
+            }
 
-        /* ------------- set j3 position ------------- */
-        j3Setpoint += j3Velocity;
-        if (currentPosition.getX() < 26)
-        {
-            j3Setpoint = 0;
-        }
-        if (j3Setpoint > 90)
-        {
-            j3Setpoint = 90;
-        }
-        if (j3Setpoint < -90)
-        {
-            j3Setpoint = -90;
-        }
+            /* --------- integrate toward new j4 position --------- */
+            j4Error = j4Setpoint - j4Current;
+            if (std::abs(j4Error) > 2 * j4Rate)
+            {
+                j4Current += j4Rate * j4Error / std::abs(j4Error);
+            }
+            else
+            {
+                j4Current += j4Error / 2;
+            }
 
-        /* ------------- integrate toward new j3 position ------------- */
-        j3Error = j3Setpoint - j3Current;
-        if (std::abs(j3Error) > j3Rate)
-        {
-            j3Current += j3Rate * j3Error / std::abs(j3Error);
-        }
-        else
-        {
-            j3Current += j3Error / 2;
+            /* ------------- set j3 position ------------- */
+            j3Setpoint += j3Velocity;
+            if (currentPosition.getX() < 26)
+            {
+                j3Setpoint = 0;
+            }
+            if (j3Setpoint > 90)
+            {
+                j3Setpoint = 90;
+            }
+            if (j3Setpoint < -90)
+            {
+                j3Setpoint = -90;
+            }
+
+            /* ------------- integrate toward new j3 position ------------- */
+            j3Error = j3Setpoint - j3Current;
+            if (std::abs(j3Error) > j3Rate)
+            {
+                j3Current += j3Rate * j3Error / std::abs(j3Error);
+            }
+            else
+            {
+                j3Current += j3Error / 2;
+            }
         }
     }
 
