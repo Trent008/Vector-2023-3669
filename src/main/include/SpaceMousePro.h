@@ -7,7 +7,7 @@ class SpaceMousePro
 private:
     frc::Joystick *joy;
     double speed;
-    double deadband = 0.001;
+    double deadband = 0.01;
     double change[6];
     double lastValue[6], value[6];
 

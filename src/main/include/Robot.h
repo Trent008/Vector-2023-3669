@@ -30,9 +30,10 @@ public:
   Vector cone2 = {35.5, 51};
   Vector cube1 = {13, 30};
   Vector cube2 = {30, 45};
-  Vector p1 = {75, 18.5};
+  Vector p1 = {75, 96}; //{75, 18.5};
   Vector offset = {20};
-  Vector dropCone = {0, -5};
+  Vector dropCone = {0, -7};
+  Vector chargingStation = {152, 96};
 
   /*
    * the pose, armPosition, suction, wrist, driveRate, rotationRate
@@ -45,22 +46,23 @@ public:
           {Pose{p1, -90}, cone2, 1},
           {Pose{p1, -90}, cone2+dropCone, 0},
           {Pose{p1+offset, -90}, cone2+dropCone, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
-          {Pose{p1+offset, -90}, home, 0},
+          {Pose{chargingStation + Vector{70}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{chargingStation - Vector{9}, -90}, home, 0},
       };
 
   int i = 0; // keeps track of the autonomous point index
   int t = 0; // keeps track of the number of processer cycles
 
-  Limelight limelight{true};
+  Limelight limelight_left{"left"};
+  Limelight limelight_right{"right"};
 
   frc::Joystick driveController{0};
   frc::Joystick armController{1};
@@ -99,7 +101,7 @@ public:
   FOC motionController{robotAccel, robotTurnAccel};
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
   SwerveDrive swerve{&motionController, modules};
-  RobotPoseTargeting swerveTargeting{&swerve, 0.02, 0.007};
+  RobotPoseTargeting swerveTargeting{&swerve, 0.03, 0.007};
 
   // leadscrew motors and PID controllers
   rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};

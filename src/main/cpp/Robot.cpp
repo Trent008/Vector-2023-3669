@@ -35,20 +35,20 @@ void Robot::AutonomousInit()
   driveMotor3.SetSelectedSensorPosition(0);
   driveMotor4.SetSelectedSensorPosition(0);
   swerve.zeroYaw();
-  swerveTargeting.setCurrentPosition(limelight.GetRobotPosition());
+  // swerveTargeting.setCurrentPosition(limelight.GetRobotPosition());
 }
 
 void Robot::AutonomousPeriodic()
 {
   // move the swerve drive twards the next setpoint
-  if (limelight.GetRobotPosition() > 10)
-  {
-    swerve.setPosition(limelight.GetRobotPosition());
-  }
+  // if (limelight.GetRobotPosition() > 10)
+  // {
+  //   swerve.setPosition(limelight.GetRobotPosition());
+  // }
   swerveTargeting.targetPose(setpoints[i].pose, setpoints[i].driveRate, setpoints[i].rotationRate);
   // turn the pumps on/off if vacuum is low/high
-  //pump1.Set(arm.getPump(pressure1.Get()));
-  //pump2.Set(arm.getPump(pressure2.Get()));
+  pump1.Set(arm.getPump(pressure1.Get()));
+  pump2.Set(arm.getPump(pressure2.Get()));
   // set the suction cups
   isHoldingCone = setpoints[i].suctionCupState;
   suctionCup1.Set(isHoldingCone);
@@ -88,15 +88,15 @@ void Robot::TeleopPeriodic()
 
   // get user input
   SMPro.update();
-  if (limelight.GetRobotPosition() - swerve.getPosition() < 24)
-  {
-    swerve.setPosition(limelight.GetRobotPosition());
-  }
+  // if (limelight.GetRobotPosition() - swerve.getPosition() < 24)
+  // {
+  //   swerve.setPosition(limelight.GetRobotPosition());
+  // }
   swerve.Set(xboxC.getFieldVelocity());
 
   // run the suction pumps
-  //pump1.Set(arm.getPump(pressure1.Get()));
-  //pump2.Set(arm.getPump(pressure2.Get()));
+  pump1.Set(arm.getPump(pressure1.Get()));
+  pump2.Set(arm.getPump(pressure2.Get()));
   // pickup/drop cone
   isHoldingCone = (SMPro.getCTRLPressed()) ? !isHoldingCone : isHoldingCone;
   suctionCup1.Set(isHoldingCone);

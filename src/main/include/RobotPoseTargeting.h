@@ -30,7 +30,7 @@ public:
         //distanceToSetpointPose = setpoint - current;
         poseError = setpoint - swerve->getPose();
         swerveRate = poseError * Vector{positionProportional, angleProportional};
-        swerveRate.limit(Vector{0.2, 0.2});
+        swerveRate.limit(Vector{0.25, 0.25});
         swerve->Set(swerveRate, true);
     }
 

@@ -201,6 +201,6 @@ public:
      */
     double getPump(bool pressure)
     {
-        return ((pressure) ? 0.5 : 0);
+        return ((pressure) ? 0.75 : 0);
     }
 };

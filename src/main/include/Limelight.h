@@ -7,16 +7,12 @@
 class Limelight {
 private:
     std::shared_ptr<nt::NetworkTable> table_;
-    std::string bot_pose_type;
+    std::string bot_pose_type = "botpose_wpiblue";
 
 public:
-    Limelight(bool blue_alliance = true) {
+    Limelight(std::string name) {
         // Initialize NetworkTables
-        bot_pose_type = "botpose_wpired";
-        if (blue_alliance){
-            bot_pose_type = "botpose_wpiblue";
-        }
-        table_ = nt::NetworkTableInstance::GetDefault().GetTable("limelight-left");
+        table_ = nt::NetworkTableInstance::GetDefault().GetTable("limelight-" + name);
     }
 
     double GetRobotX(){
