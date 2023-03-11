@@ -90,4 +90,8 @@ public:
             angle += angleError / 2;
         }
     }
+
+    void setPosition(Vector position) {
+        this->position = position;
+    }
 };

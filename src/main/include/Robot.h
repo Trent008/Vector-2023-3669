@@ -24,36 +24,37 @@ public:
   double robotTurnAccel = 0.03; // acceleration rate of robot steering rate
 
   // positions that the robot can be automatically set to
+  Vector home = {-9, 11};
   Vector loadingStation = {15, 43};
   Vector cone1 = {21, 40};
-  Vector cone2 = {37, 51};
+  Vector cone2 = {35.5, 51};
   Vector cube1 = {13, 30};
   Vector cube2 = {30, 45};
-  Vector p1 = {74, 18.5};
-  Vector offset = {6};
-  Vector dropCone = {0, -5}
+  Vector p1 = {75, 18.5};
+  Vector offset = {20};
+  Vector dropCone = {0, -5};
 
   /*
-   * the pose, arm coordinates, suction, wait time
+   * the pose, armPosition, suction, wrist, driveRate, rotationRate
    * for the autonomous routine
    */
   AutoSetpoint setpoints[15] =
       {
-          {Pose{p1+offset, -90}, {-9, 9.75}, 1},
+          {Pose{p1+offset, -90}, home, 1},
           {Pose{p1+offset, -90}, cone2, 1},
           {Pose{p1, -90}, cone2, 1},
-          {Pose{p1, -90}, cone2+dropCone, 1},
+          {Pose{p1, -90}, cone2+dropCone, 0},
           {Pose{p1+offset, -90}, cone2+dropCone, 0},
-          {Pose{p1+offset, -90}, {-9, 9.75}, 0}, // reset
-          {Pose{p1+offset, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
-          {Pose{{90, 18.5}, -90}, {-9, 9.75}, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
+          {Pose{p1+offset, -90}, home, 0},
       };
 
   int i = 0; // keeps track of the autonomous point index
@@ -98,7 +99,7 @@ public:
   FOC motionController{robotAccel, robotTurnAccel};
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
   SwerveDrive swerve{&motionController, modules};
-  RobotPoseTargeting swerveTargeting{&swerve, 0.03, 0.007};
+  RobotPoseTargeting swerveTargeting{&swerve, 0.02, 0.007};
 
   // leadscrew motors and PID controllers
   rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};

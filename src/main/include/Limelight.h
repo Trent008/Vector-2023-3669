@@ -16,7 +16,7 @@ public:
         if (blue_alliance){
             bot_pose_type = "botpose_wpiblue";
         }
-        table_ = nt::NetworkTableInstance::GetDefault().GetTable("limelight-laurel");
+        table_ = nt::NetworkTableInstance::GetDefault().GetTable("limelight-left");
     }
 
     double GetRobotX(){
@@ -33,6 +33,10 @@ public:
         std::vector<double> robot_pose = table_->GetNumberArray(bot_pose_type, {});
         double z = robot_pose[2];
         return z;
+    }
+
+    bool targetExists() {
+        return false;//table_->GetBoolean();
     }
     
     Vector GetRobotPosition() {

@@ -8,7 +8,7 @@ private:
     const double j1_Min = 0;
     const double j1_Max = 14.25;
     const double j2_Min = -3;
-    const double j2_Max = 20;
+    const double j2_Max = 17;
     double j4_Max;
     double j4_Min;
     // position setpoint limits
