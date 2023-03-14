@@ -95,3 +95,9 @@ public:
         this->position = position;
     }
 };
+
+struct ArmPose
+{
+    Vector position = {};
+    double wrist = 0;
+};

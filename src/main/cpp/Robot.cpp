@@ -41,10 +41,20 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
   // move the swerve drive twards the next setpoint
-  // if (limelight.GetRobotPosition() > 10)
-  // {
-  //   swerve.setPosition(limelight.GetRobotPosition());
-  // }
+  if (setpoints[i].useLimelight) {
+    if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
+    {
+      swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
+    }
+    if (limelight_left.GetRobotPosition() > 10)
+    {
+      swerve.setPosition(limelight_left.GetRobotPosition());
+    }
+    if (limelight_right.GetRobotPosition() > 10)
+    {
+      swerve.setPosition(limelight_right.GetRobotPosition());
+    }
+  }
   swerveTargeting.targetPose(setpoints[i].pose, setpoints[i].driveRate, setpoints[i].rotationRate);
   // turn the pumps on/off if vacuum is low/high
   pump1.Set(arm.getPump(pressure1.Get()));
@@ -54,7 +64,7 @@ void Robot::AutonomousPeriodic()
   suctionCup1.Set(isHoldingCone);
   suctionCup2.Set(isHoldingCone);
   // set the arm position and angle
-  arm.setArmPosition(setpoints[i].armPosition, setpoints[i].wristAngle);
+  arm.setArmPosition(setpoints[i].armPose.position, setpoints[i].armPose.wrist);
   arm.update(t > 25);
   // screw = j1
   // extension = j2

@@ -192,7 +192,7 @@ public:
 
     bool poseReached(double tolerance)
     {
-        return error < tolerance;
+        return error < tolerance && j4Error < tolerance;
     }
 
     /**

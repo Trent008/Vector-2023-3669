@@ -5,7 +5,6 @@
 #include "frc/DigitalInput.h"
 #include "frc/Solenoid.h"
 #include "cameraserver/CameraServer.h"
-#include "InterLinkX.h"
 #include "SpaceMousePro.h"
 #include "SpaceMouseEnt.h"
 #include "XBOXController.h"
@@ -32,30 +31,30 @@ public:
   Vector cube2 = {30, 45};
   Vector p1 = {75, 96}; //{75, 18.5};
   Vector offset = {20};
-  Vector dropCone = {0, -7};
+  Vector dropCone = {0, -5}; //{0, -7}
   Vector chargingStation = {152, 96};
 
   /*
-   * the pose, armPosition, suction, wrist, driveRate, rotationRate
+   * the pose, armPosition, wrist, suction, useLimelight, driveRate, rotationRate
    * for the autonomous routine
    */
   AutoSetpoint setpoints[15] =
       {
-          {Pose{p1+offset, -90}, home, 1},
-          {Pose{p1+offset, -90}, cone2, 1},
-          {Pose{p1, -90}, cone2, 1},
-          {Pose{p1, -90}, cone2+dropCone, 0},
-          {Pose{p1+offset, -90}, cone2+dropCone, 0},
-          {Pose{chargingStation + Vector{70}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
-          {Pose{chargingStation - Vector{9}, -90}, home, 0},
+          {Pose{p1+offset, -90}, ArmPose{cone2+dropCone, 0}, true, false},
+          {Pose{p1, -90}, ArmPose{cone2+dropCone, 50}, true, false},
+          {Pose{p1, -90}, ArmPose{cone2+dropCone, 0}, true, false},
+          {Pose{chargingStation+Vector{70}, -90}, home, 0, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
+          {Pose{chargingStation, -90}, ArmPose{home, 0}, false, false},
       };
 
   int i = 0; // keeps track of the autonomous point index
@@ -68,7 +67,6 @@ public:
   frc::Joystick armController{1};
   /* ------ driving controller types ------ */
   XBOXController xboxC{&driveController};
-  InterLinkX interLink{&driveController};
   SpaceMouseEnt SMEnt{&driveController};
 
   /* -------- arm controller types -------- */
