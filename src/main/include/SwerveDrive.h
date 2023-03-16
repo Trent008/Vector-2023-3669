@@ -41,11 +41,11 @@ public:
   /**
    * runs the swerve modules using the values from the motion controller
    **/
-  void Set(Pose fieldPoseVelocity = {}, bool isAutonomous = false)
+  void Set(Pose fieldPoseVelocity = {}, bool isAutonomous = false, bool isAccellerated = true)
   {
     navXAngle = navx.GetYaw();
 
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180), isAutonomous);
+    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180), isAccellerated);
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {

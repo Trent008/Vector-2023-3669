@@ -33,6 +33,13 @@ public:
         return res;
     }
 
+    Pose operator+(Vector const &obj)
+    {
+        Pose res;
+        res.position = position + obj;
+        res.angle = angle;
+    }
+
     void operator*=(Vector &obj)
     {
         position *= obj.getX();
@@ -96,8 +103,46 @@ public:
     }
 };
 
-struct ArmPose
+class ArmPose
 {
-    Vector position = {};
-    double wrist = 0;
+private:
+    Vector position;
+    double wrist;
+    double twist;
+    bool suctionCupState;
+
+public:
+    ArmPose(Vector position = {-9, 11}, bool suctionCupState = false, double wrist = 0, double twist = 0)
+    {
+        this->position = position;
+        this->wrist = wrist;
+        this->twist = twist;
+        this->suctionCupState = suctionCupState;
+    }
+
+    Vector getPosition()
+    {
+        return position;
+    }
+    
+    double getWrist() {
+        return wrist;
+    }
+
+    double getTwist() {
+        return twist;
+    }
+
+    bool getSuctionCupState() {
+        return suctionCupState;
+    }
+
+    ArmPose operator+(Vector const &obj)
+    {
+        ArmPose res;
+        res.position = position + obj;
+        res.wrist = wrist;
+        res.twist = twist;
+        res.suctionCupState = suctionCupState;
+    }
 };

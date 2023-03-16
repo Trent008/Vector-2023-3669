@@ -14,11 +14,11 @@ void Robot::RobotInit()
   driveMotor4.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
 
   // arm PID config
-  left_J1.SetP(0.1);
-  right_J1.SetP(0.1);
-  j2.SetP(0.1);
-  j3.SetP(0.1);
-  j4.SetP(0.1);
+  // left_J1.SetP(0.1);
+  // right_J1.SetP(0.1);
+  // j2.SetP(0.05);
+  // j3.SetP(0.1);
+  // j4.SetP(0.1);
 }
 
 void Robot::RobotPeriodic()
@@ -41,7 +41,8 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
   // move the swerve drive twards the next setpoint
-  if (setpoints[i].useLimelight) {
+  if (params.setpoints[i].useLimelight)
+  {
     if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
     {
       swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
@@ -55,26 +56,10 @@ void Robot::AutonomousPeriodic()
       swerve.setPosition(limelight_right.GetRobotPosition());
     }
   }
-  swerveTargeting.targetPose(setpoints[i].pose, setpoints[i].driveRate, setpoints[i].rotationRate);
-  // turn the pumps on/off if vacuum is low/high
-  pump1.Set(arm.getPump(pressure1.Get()));
-  pump2.Set(arm.getPump(pressure2.Get()));
-  // set the suction cups
-  isHoldingCone = setpoints[i].suctionCupState;
-  suctionCup1.Set(isHoldingCone);
-  suctionCup2.Set(isHoldingCone);
-  // set the arm position and angle
-  arm.setArmPosition(setpoints[i].armPose.position, setpoints[i].armPose.wrist);
-  arm.update(t > 25);
-  // screw = j1
-  // extension = j2
-  // twisting = j3
-  // wrist = j4
-  left_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
-  right_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
-  j2.SetReference(arm.GetJ2(), rev::CANSparkMax::ControlType::kPosition);
-  j3.SetReference(arm.GetJ3(), rev::CANSparkMax::ControlType::kPosition);
-  j4.SetReference(arm.GetJ4(), rev::CANSparkMax::ControlType::kPosition);
+  swerveTargeting.targetPose(params.setpoints[i].pose, params.setpoints[i].driveRate, params.setpoints[i].rotationRate);
+  // set the arm pose
+  arm.setArmPosition(params.setpoints[i].armPose);
+  arm.run(t > 25);
   // go to next setpoint if this setpoint has been reached
   if (arm.poseReached(1) && swerveTargeting.poseReached(3, 5) && (i < 14))
   {
@@ -98,61 +83,76 @@ void Robot::TeleopPeriodic()
 
   // get user input
   SMPro.update();
-  // if (limelight.GetRobotPosition() - swerve.getPosition() < 24)
-  // {
-  //   swerve.setPosition(limelight.GetRobotPosition());
-  // }
+  if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
+  {
+    swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
+  }
+  else if (limelight_left.GetRobotPosition() > 10)
+  {
+    swerve.setPosition(limelight_left.GetRobotPosition());
+  }
+  else if (limelight_right.GetRobotPosition() > 10)
+  {
+    swerve.setPosition(limelight_right.GetRobotPosition());
+  }
   swerve.Set(xboxC.getFieldVelocity());
 
-  // run the suction pumps
-  pump1.Set(arm.getPump(pressure1.Get()));
-  pump2.Set(arm.getPump(pressure2.Get()));
-  // pickup/drop cone
-  isHoldingCone = (SMPro.getCTRLPressed()) ? !isHoldingCone : isHoldingCone;
-  suctionCup1.Set(isHoldingCone);
-  suctionCup2.Set(isHoldingCone);
-
-  // set arm PID references
-  left_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
-  right_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
-  j2.SetReference(arm.GetJ2(), rev::CANSparkMax::ControlType::kPosition);
-  j3.SetReference(arm.GetJ3(), rev::CANSparkMax::ControlType::kPosition);
-  j4.SetReference(arm.GetJ4(), rev::CANSparkMax::ControlType::kPosition);
+  // switch between cone mode and cube mode
+  if (SMPro.getShiftPressed()) {
+    isCone = !isCone; 
+  }
 
   // arm position buttons
   if (SMPro.getAltPressed())
   {
-    arm.setArmPosition({10, 7}, -7, 0);
+    arm.setArmPosition(ArmPose{{8, 4}, true, -7});
+    armSetpointType = 1;
+    isHomingFromFloor = false;
+  }
+  if (SMPro.getESCPressed())
+  {
+    arm.setArmPosition(feederStation(isCone));
+    armSetpointType = 2;
+    isHomingFromFloor = false;
   }
   if (SMPro.get1Pressed())
   {
-    arm.setArmPosition(cone1, 0, 0);
+    arm.setArmPosition(middle(isCone));
+    armSetpointType = 3;
+    isHomingFromFloor = false;
   }
   if (SMPro.get2Pressed())
   {
-    arm.setArmPosition(cone2, 0, 0);
+    arm.setArmPosition(top(isCone));
+    armSetpointType = 3;
+    isHomingFromFloor = false;
   }
-  if (SMPro.get3Pressed())
+  if (SMPro.getCTRLPressed())
   {
-    arm.setArmPosition(cube1, 0, 0);
+    if (armSetpointType == 1)
+    {
+      isHomingFromFloor = true;
+      arm.setArmPosition(ArmPose{{8, 16}, true, 10});
+    }
+    if (armSetpointType == 2)
+    {
+      arm.setArmPosition(home(isCone, true));
+    }
+    if (armSetpointType == 3)
+    {
+      arm.setArmPosition(home(isCone, false));
+    }
+    if (armSetpointType == 0)
+    {
+      arm.setArmPosition(home(isCone, !arm.GetSuctionCupState()) + Vector{0, 3});
+    }
+    armSetpointType = 0;
   }
-  if (SMPro.get4Pressed())
+  arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
+  if (isHomingFromFloor && arm.poseReached(1))
   {
-    arm.setArmPosition(cube2, 0, 0);
-  }
-  if (SMPro.getShiftPressed())
-  {
-    isHoming = true;
-    arm.setArmPosition(Vector{8, 14}, 10, 0);
-  }
-  if (SMPro.getESCPressed()) {
-    arm.setArmPosition(loadingStation, -8);
-  }
-  arm.update(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
-  if (isHoming && arm.poseReached(1))
-  {
-    isHoming = false;
-    arm.setArmPosition(home, 10, 0);
+    isHomingFromFloor = false;
+    arm.setArmPosition(home(isCone, true) + Vector{0, 3});
   }
 }
 

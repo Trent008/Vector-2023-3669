@@ -1,6 +1,6 @@
 #pragma once
 #include "frc/Joystick.h"
-#include "Pose.h"
+#include "PoseTypes.h"
 
 class XBOXController
 {

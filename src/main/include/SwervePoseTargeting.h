@@ -5,19 +5,19 @@
  * allows the swerve drive to autonomously drive
  * to an array of current positions and angles
  **/
-class RobotPoseTargeting
+class SwervePoseTargeting
 {
 private:
     double positionProportional; // rate at which to approach the current position
     double angleProportional;    // rate at which to approach the current angle
+    bool useAcceleration;       // whether or not to accelerate the robot rate
     Pose poseError;              // how fast the robot needs to move to get to its next position setpoint
     Pose distanceToSetpointPose;
     Pose swerveRate;
-    Pose current;
     SwerveDrive *swerve;
 
 public:
-    RobotPoseTargeting(SwerveDrive *swerve, double positionProportional, double angleProportional)
+    SwervePoseTargeting(SwerveDrive *swerve, double positionProportional, double angleProportional)
     {   
         this->positionProportional = positionProportional;
         this->angleProportional = angleProportional;
@@ -26,12 +26,17 @@ public:
 
     void targetPose(Pose setpoint, double driveRate, double rotationRate)
     {   
-        //current.moveToward(setpoint, driveRate / 50, rotationRate / 50);
-        //distanceToSetpointPose = setpoint - current;
         poseError = setpoint - swerve->getPose();
         swerveRate = poseError * Vector{positionProportional, angleProportional};
-        swerveRate.limit(Vector{0.25, 0.25});
-        swerve->Set(swerveRate, true);
+        // use acceleration if the speed is not being accelerated by the Proportional
+        if (swerveRate.getPosition() > driveRate) {
+            useAcceleration = true;
+        } else {
+            useAcceleration = false;
+        }
+
+        swerveRate.limit(Vector{driveRate, rotationRate});
+        swerve->Set(swerveRate, true, useAcceleration);
     }
 
     bool poseReached(double positionTolerance, double angleTolerance)
@@ -40,7 +45,6 @@ public:
     }
 
     void setCurrentPosition(Vector position) {
-        //current.setPosition(position);
         swerve->setPosition(position);
     }
 

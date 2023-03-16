@@ -1,14 +1,44 @@
 #pragma once
-#include "Vector.h"
+#include "PoseTypes.h"
+#include "rev/CANSparkMax.h"
+#include "ctre/phoenix.h"
+#include "frc/Solenoid.h"
+#include "frc/DigitalInput.h"
+
 
 class ArmController
 {
 private:
+    // leadscrew motors and PID controllers
+    rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax right_J1_NEO{42, rev::CANSparkMax::MotorType::kBrushless};
+    rev::SparkMaxPIDController left_J1 = left_J1_NEO.GetPIDController();
+    rev::SparkMaxPIDController right_J1 = right_J1_NEO.GetPIDController();
+
+    // arm extension motor and PID controller
+    rev::CANSparkMax j2_NEO{43, rev::CANSparkMax::MotorType::kBrushless};
+    rev::SparkMaxPIDController j2 = j2_NEO.GetPIDController();
+
+    // end-of-arm motors and PID controllers
+    rev::CANSparkMax j3_NEO{44, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax j4_NEO{45, rev::CANSparkMax::MotorType::kBrushless};
+    rev::SparkMaxPIDController j3 = j3_NEO.GetPIDController();
+    rev::SparkMaxPIDController j4 = j4_NEO.GetPIDController();
+
+    // vacuum pumps
+    WPI_TalonSRX pump1{51};
+    WPI_TalonSRX pump2{52};
+    frc::DigitalInput pressure1{0}; // right pressure switch digital input
+    frc::DigitalInput pressure2{1}; // left pressure switch digital input
+    frc::Solenoid suctionCup1{frc::PneumaticsModuleType::REVPH, 0};
+    frc::Solenoid suctionCup2{frc::PneumaticsModuleType::REVPH, 15};
+    bool suctionCupState;
+
     // axis limits
     const double j1_Min = 0;
     const double j1_Max = 14.25;
-    const double j2_Min = -3;
-    const double j2_Max = 17;
+    const double j2_Min = -3.2;
+    const double j2_Max = 20;
     double j4_Max;
     double j4_Min;
     // position setpoint limits
@@ -20,7 +50,9 @@ private:
     Vector currentPosition;
     Vector targetPosition;
     Vector error;
-    double positionRate, j3Rate, j4Rate;
+    double positionRate = 0.8;
+    double j3Rate = 4;
+    double j4Rate = 4;
     double j2Length;
     double startingJ1Length;
     double j1SetpointInches;
@@ -34,11 +66,8 @@ private:
     double j4Error;
 
 public:
-    ArmController(double positionRate, double j3Rate, double j4Rate)
+    ArmController()
     {
-        this->positionRate = positionRate;
-        this->j3Rate = j3Rate;
-        this->j4Rate = j4Rate;
         currentPosition = startPosition;
         targetPosition = startPosition;
         startingJ4Position = angle(startPosition) - 90;
@@ -47,7 +76,7 @@ public:
         j4_Min = j4_Max - 180;
     }
 
-    void update(bool enabled, Vector velocityTarget = {}, double j3Velocity = 0, double j4Velocity = 0)
+    void run(bool enabled, Vector velocityTarget = {}, double j3Velocity = 0, double j4Velocity = 0)
     {
 
         /* ------------- limits the target position ------------- */
@@ -71,6 +100,8 @@ public:
         {
             targetPosition = Vector{frame, floor};
         }
+
+
         if (enabled) {
             /* -- moves the currentPosition toward the target currentPosition -- */
             error = targetPosition - currentPosition;
@@ -154,7 +185,16 @@ public:
             {
                 j3Current += j3Error / 2;
             }
+            left_J1.SetReference(GetJ1(), rev::CANSparkMax::ControlType::kPosition);
+            right_J1.SetReference(GetJ1(), rev::CANSparkMax::ControlType::kPosition);
+            j2.SetReference(GetJ2(), rev::CANSparkMax::ControlType::kPosition);
+            j3.SetReference(GetJ3(), rev::CANSparkMax::ControlType::kPosition);
+            j4.SetReference(GetJ4(), rev::CANSparkMax::ControlType::kPosition);
         }
+        pump1.Set((pressure1.Get()) ? 0.75 : 0);
+        pump2.Set((pressure2.Get()) ? 0.75 : 0);
+        suctionCup1.Set(suctionCupState);
+        suctionCup2.Set(suctionCupState);
     }
 
     double GetJ1()
@@ -183,24 +223,20 @@ public:
         return j4Current * (5.0 / 36);
     }
 
-    void setArmPosition(Vector targetFromOrigin, double j4UserSetpoint, double j3Setpoint = 0)
+    bool GetSuctionCupState() {
+        return suctionCupState;
+    }
+
+    void setArmPosition(ArmPose armPose = {})
     {
-        targetPosition = origin + targetFromOrigin;
-        this->j4UserSetpoint = j4UserSetpoint;
-        this->j3Setpoint = j3Setpoint;
+        targetPosition = origin + armPose.getPosition();
+        j4UserSetpoint = armPose.getWrist();
+        j3Setpoint = armPose.getTwist();
+        suctionCupState = armPose.getSuctionCupState();
     }
 
     bool poseReached(double tolerance)
     {
         return error < tolerance && j4Error < tolerance;
-    }
-
-    /**
-     * gets the vacuum pump percent output
-     * given the state of the pressure switch
-     */
-    double getPump(bool pressure)
-    {
-        return ((pressure) ? 0.75 : 0);
     }
 };
