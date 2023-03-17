@@ -112,6 +112,7 @@ private:
     bool suctionCupState;
 
 public:
+    // arm position, cup state, wrist angle, twist angle
     ArmPose(Vector position = {-9, 11}, bool suctionCupState = false, double wrist = 0, double twist = 0)
     {
         this->position = position;

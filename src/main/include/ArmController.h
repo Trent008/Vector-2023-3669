@@ -193,8 +193,8 @@ public:
             j3.SetReference(GetJ3(), rev::CANSparkMax::ControlType::kPosition);
             j4.SetReference(GetJ4(), rev::CANSparkMax::ControlType::kPosition);
         }
-        //pump1.Set((pressure1.Get()) ? 0.75 : 0);
-        //pump2.Set((pressure2.Get()) ? 0.75 : 0);
+        pump1.Set((pressure1.Get()) ? 0.75 : 0);
+        pump2.Set((pressure2.Get()) ? 0.75 : 0);
         suctionCup1.Set(suctionCupState);
         suctionCup2.Set(suctionCupState);
     }
