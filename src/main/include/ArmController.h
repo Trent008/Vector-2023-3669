@@ -233,12 +233,15 @@ public:
         suctionCupState = !suctionCupState;
     }
 
-    void setArmPosition(ArmPose armPose = {})
+    void setArmPosition(ArmPose armPose = {}, bool isAutonomous = false)
     {
         targetPosition = origin + armPose.getPosition();
         j4UserSetpoint = armPose.getWrist();
         j3Setpoint = armPose.getTwist();
-        // suctionCupState = armPose.getSuctionCupState(); // TODO: set this only in autonomous
+        if (isAutonomous)
+        {
+            suctionCupState = armPose.getSuctionCupState();
+        }
     }
 
     bool poseReached(double tolerance)
