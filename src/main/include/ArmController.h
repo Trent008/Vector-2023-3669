@@ -9,30 +9,8 @@
 class ArmController
 {
 private:
-    // leadscrew motors and PID controllers
-    rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};
-    rev::CANSparkMax right_J1_NEO{42, rev::CANSparkMax::MotorType::kBrushless};
-    rev::SparkMaxPIDController left_J1 = left_J1_NEO.GetPIDController();
-    rev::SparkMaxPIDController right_J1 = right_J1_NEO.GetPIDController();
-
-    // arm extension motor and PID controller
-    rev::CANSparkMax j2_NEO{43, rev::CANSparkMax::MotorType::kBrushless};
-    rev::SparkMaxPIDController j2 = j2_NEO.GetPIDController();
-
-    // end-of-arm motors and PID controllers
-    rev::CANSparkMax j3_NEO{44, rev::CANSparkMax::MotorType::kBrushless};
-    rev::CANSparkMax j4_NEO{45, rev::CANSparkMax::MotorType::kBrushless};
-    rev::SparkMaxPIDController j3 = j3_NEO.GetPIDController();
-    rev::SparkMaxPIDController j4 = j4_NEO.GetPIDController();
-
-    // vacuum pumps
-    WPI_TalonSRX pump1{51};
-    WPI_TalonSRX pump2{52};
-    frc::DigitalInput pressure1{0}; // right pressure switch digital input
-    frc::DigitalInput pressure2{1}; // left pressure switch digital input
-    frc::Solenoid suctionCup1{frc::PneumaticsModuleType::REVPH, 0};
-    frc::Solenoid suctionCup2{frc::PneumaticsModuleType::REVPH, 15};
-    bool suctionCupState;
+    
+    bool suctionCupState = false;
 
     // axis limits
     const double j1_Min = 0;
@@ -66,6 +44,30 @@ private:
     double j4Error;
 
 public:
+    // leadscrew motors and PID controllers
+    rev::CANSparkMax left_J1_NEO{41, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax right_J1_NEO{42, rev::CANSparkMax::MotorType::kBrushless};
+    rev::SparkMaxPIDController left_J1 = left_J1_NEO.GetPIDController();
+    rev::SparkMaxPIDController right_J1 = right_J1_NEO.GetPIDController();
+
+    // arm extension motor and PID controller
+    rev::CANSparkMax j2_NEO{43, rev::CANSparkMax::MotorType::kBrushless};
+    rev::SparkMaxPIDController j2 = j2_NEO.GetPIDController();
+
+    // end-of-arm motors and PID controllers
+    rev::CANSparkMax j3_NEO{44, rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax j4_NEO{45, rev::CANSparkMax::MotorType::kBrushless};
+    rev::SparkMaxPIDController j3 = j3_NEO.GetPIDController();
+    rev::SparkMaxPIDController j4 = j4_NEO.GetPIDController();
+
+    // vacuum pumps
+    WPI_TalonSRX pump1{51};
+    WPI_TalonSRX pump2{52};
+    frc::DigitalInput pressure1{0}; // right pressure switch digital input
+    frc::DigitalInput pressure2{1}; // left pressure switch digital input
+    frc::Solenoid suctionCup1{frc::PneumaticsModuleType::REVPH, 0};
+    frc::Solenoid suctionCup2{frc::PneumaticsModuleType::REVPH, 15};
+
     ArmController()
     {
         currentPosition = startPosition;
@@ -191,8 +193,8 @@ public:
             j3.SetReference(GetJ3(), rev::CANSparkMax::ControlType::kPosition);
             j4.SetReference(GetJ4(), rev::CANSparkMax::ControlType::kPosition);
         }
-        pump1.Set((pressure1.Get()) ? 0.75 : 0);
-        pump2.Set((pressure2.Get()) ? 0.75 : 0);
+        //pump1.Set((pressure1.Get()) ? 0.75 : 0);
+        //pump2.Set((pressure2.Get()) ? 0.75 : 0);
         suctionCup1.Set(suctionCupState);
         suctionCup2.Set(suctionCupState);
     }
@@ -227,12 +229,16 @@ public:
         return suctionCupState;
     }
 
+    void toggleCupState() {
+        suctionCupState = !suctionCupState;
+    }
+
     void setArmPosition(ArmPose armPose = {})
     {
         targetPosition = origin + armPose.getPosition();
         j4UserSetpoint = armPose.getWrist();
         j3Setpoint = armPose.getTwist();
-        suctionCupState = armPose.getSuctionCupState();
+        // suctionCupState = armPose.getSuctionCupState(); // TODO: set this only in autonomous
     }
 
     bool poseReached(double tolerance)

@@ -12,20 +12,16 @@ void Robot::RobotInit()
   driveMotor2.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
   driveMotor3.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
   driveMotor4.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
-
   // arm PID config
-  // left_J1.SetP(0.1);
-  // right_J1.SetP(0.1);
-  // j2.SetP(0.05);
-  // j3.SetP(0.1);
-  // j4.SetP(0.1);
+    arm.left_J1.SetP(0.1);
+    arm.right_J1.SetP(0.1);
+    arm.j2.SetP(0.05);
+    arm.j3.SetP(0.1);
+    arm.j4.SetP(0.1);
 }
 
-void Robot::RobotPeriodic()
-{
-  frc::SmartDashboard::PutNumber("x", swerve.getPosition().getX());
-  frc::SmartDashboard::PutNumber("y", swerve.getPosition().getY());
-  frc::SmartDashboard::PutNumber("a", swerve.getOffsetRobotAngle(-90));
+void Robot::RobotPeriodic(){
+  frc::SmartDashboard::PutBoolean("object type:", isCone);
 }
 
 void Robot::AutonomousInit()
@@ -78,23 +74,11 @@ void Robot::TeleopPeriodic()
   // zero the yaw if the zeroing button is pressed
   if (SMPro.getMenuPressed())
   {
-    swerve.zeroYaw();
+    arm.toggleCupState();
   }
 
   // get user input
   SMPro.update();
-  if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
-  {
-    swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
-  }
-  else if (limelight_left.GetRobotPosition() > 10)
-  {
-    swerve.setPosition(limelight_left.GetRobotPosition());
-  }
-  else if (limelight_right.GetRobotPosition() > 10)
-  {
-    swerve.setPosition(limelight_right.GetRobotPosition());
-  }
   swerve.Set(xboxC.getFieldVelocity());
 
   // switch between cone mode and cube mode
@@ -105,30 +89,34 @@ void Robot::TeleopPeriodic()
   // arm position buttons
   if (SMPro.getAltPressed())
   {
-    arm.setArmPosition(ArmPose{{8, 4}, true, -7});
+    arm.setArmPosition(floor(isCone));
     armSetpointType = 1;
-    isHomingFromFloor = false;
+    //isHomingFromFloor = false;
   }
   if (SMPro.getESCPressed())
   {
     arm.setArmPosition(feederStation(isCone));
     armSetpointType = 2;
-    isHomingFromFloor = false;
+    //isHomingFromFloor = false;
   }
   if (SMPro.get1Pressed())
   {
     arm.setArmPosition(middle(isCone));
     armSetpointType = 3;
-    isHomingFromFloor = false;
+    //isHomingFromFloor = false;
   }
   if (SMPro.get2Pressed())
   {
     arm.setArmPosition(top(isCone));
     armSetpointType = 3;
-    isHomingFromFloor = false;
+    //isHomingFromFloor = false;
   }
   if (SMPro.getCTRLPressed())
   {
+    if (armSetpointType == 0)
+    {
+      arm.setArmPosition(home(isCone, !arm.GetSuctionCupState()));
+    }
     if (armSetpointType == 1)
     {
       isHomingFromFloor = true;
@@ -142,17 +130,14 @@ void Robot::TeleopPeriodic()
     {
       arm.setArmPosition(home(isCone, false));
     }
-    if (armSetpointType == 0)
-    {
-      arm.setArmPosition(home(isCone, !arm.GetSuctionCupState()) + Vector{0, 3});
-    }
+    
     armSetpointType = 0;
   }
   arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
   if (isHomingFromFloor && arm.poseReached(1))
   {
     isHomingFromFloor = false;
-    arm.setArmPosition(home(isCone, true) + Vector{0, 3});
+    arm.setArmPosition(home(isCone, true));
   }
 }
 

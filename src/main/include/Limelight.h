@@ -31,10 +31,12 @@ public:
         return z;
     }
 
+    // not yet implemented
     bool targetExists() {
-        return false;//table_->GetBoolean();
+        return false; //table_->GetBoolean();
     }
     
+    // returns the position of the robot on the field
     Vector GetRobotPosition() {
         return Vector{GetRobotX(), GetRobotY()} / 0.0254;
     }

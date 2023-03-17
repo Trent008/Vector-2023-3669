@@ -7,9 +7,17 @@
 ArmPose home(bool isCone, bool isHoldingObject) {
     if (isCone)
     {
-        return {{-9, 11}, isHoldingObject, 8, 0};
+        return ArmPose{{-9, 15}, isHoldingObject, 8, 0};
     }
-    return {{-9, 11}, isHoldingObject, 8, 0};
+    return ArmPose{{-9, 17}, isHoldingObject, 8, 0};
+}
+
+ArmPose floor(bool isCone) {
+    if (isCone)
+    {
+        return ArmPose{{8, 6}, true, -7};
+    }
+    return ArmPose{{5, 16}, true, -90 };
 }
 
 // top pole or cube slot
@@ -48,6 +56,7 @@ ArmPose feederStation(bool isCone) {
     return {{15, 43}, true, 0, 0};
 }
 
+// parameters for robot movement and autonomous
 struct Parameters
 {
     Pose startingPose = {Vector{75, 96}, -90};
