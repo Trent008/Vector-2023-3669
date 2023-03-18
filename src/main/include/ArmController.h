@@ -230,8 +230,8 @@ public:
         return suctionCupState;
     }
 
-    void toggleCupState() {
-        suctionCupState = !suctionCupState;
+    void setCupState(bool state) {
+        suctionCupState = state;
     }
 
     void setArmPosition(ArmPose armPose = {})

@@ -6,6 +6,7 @@
 #include "SpaceMousePro.h"
 #include "SpaceMouseEnt.h"
 #include "XBOXController.h"
+#include "XKeysPad.h"
 #include "ArmController.h"
 #include "SwervePoseTargeting.h"
 #include "Limelight.h"
@@ -23,9 +24,11 @@ public:
 
   frc::Joystick driveController{0};
   frc::Joystick armController{1};
+  frc::Joystick pad{2};
   /* ------ driving controller types ------ */
   XBOXController xboxC{&driveController};
   SpaceMouseEnt SMEnt{&driveController};
+  XKeysPad buttonPad{&pad};
 
   /* -------- arm controller types -------- */
   SpaceMousePro SMPro{&armController, 20};

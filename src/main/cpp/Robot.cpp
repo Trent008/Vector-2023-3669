@@ -77,42 +77,37 @@ void Robot::TeleopPeriodic()
 
   SMPro.update();
   
-  if (SMPro.getMenuPressed())
-  {
-    arm.toggleCupState();
-  }
-
   // switch between cone mode and cube mode
-  if (SMPro.getShiftPressed()) {
+  if (buttonPad.getIsConePressed()) {
     isCone = !isCone; 
   }
 
   // arm position buttons
-  if (SMPro.getAltPressed())
+  if (buttonPad.getFloorPressed())
   {
     arm.setArmPosition(floor(isCone));
     armSetpointType = 1;
     isHomingFromFloor = false;
   }
-  if (SMPro.getESCPressed())
+  if (buttonPad.getFeederStationPressed())
   {
     arm.setArmPosition(feederStation(isCone));
     armSetpointType = 2;
     isHomingFromFloor = false;
   }
-  if (SMPro.get1Pressed())
+  if (buttonPad.getMidRowPressed())
   {
     arm.setArmPosition(middle(isCone));
     armSetpointType = 3;
     isHomingFromFloor = false;
   }
-  if (SMPro.get2Pressed())
+  if (buttonPad.getHiRowPressed())
   {
     arm.setArmPosition(top(isCone));
     armSetpointType = 3;
     isHomingFromFloor = false;
   }
-  if (SMPro.getCTRLPressed())
+  if (buttonPad.getHomePressed())
   {
     if (armSetpointType == 0)
     {
@@ -134,6 +129,7 @@ void Robot::TeleopPeriodic()
     
     armSetpointType = 0;
   }
+  arm.setCupState(buttonPad.getSuctionCupState());
   arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
   if (isHomingFromFloor && arm.poseReached(1))
   {
