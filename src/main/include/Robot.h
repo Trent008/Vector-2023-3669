@@ -54,7 +54,7 @@ public:
   SwerveModule *modules[4] = {m1, m2, m3, m4};
 
   // field oriented motion control and motion smoothing class:
-  FOC motionController{params.robotAccel, params.robotTurnAccel};
+  FOC motionController;
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
   SwerveDrive swerve{&motionController, modules};
   SwervePoseTargeting swerveTargeting{&swerve, 0.03, 0.007};

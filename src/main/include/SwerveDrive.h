@@ -1,7 +1,6 @@
 #pragma once
 #include "FOC.h"
 #include "SwerveModule.h"
-#include "Parameters.h"
 
 /**
  * creates a swerve drive object that controls
@@ -22,9 +21,7 @@ private:
   Vector averagePositionChange;            // average module velocity
   Vector fieldLocation = params.startingPose.getPosition(); // field location in inches from the starting point
   AHRS navx{frc::SPI::Port::kMXP};         // NavX V2 object
-  double navXAngle;                        // angle reported from the NavX2
-  double offsetAngle;
-
+  double robotAngle
 public:
   FOC *mc; // updates the robot velocity and rotation rate
 
@@ -40,11 +37,9 @@ public:
   /**
    * runs the swerve modules using the values from the motion controller
    **/
-  void Set(Pose fieldPoseVelocity = {}, bool isAutonomous = false, bool isAccellerated = true)
+  void Set(Pose fieldPoseVelocity = {})
   {
-    navXAngle = navx.GetYaw();
-
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getOffsetRobotAngle(isAutonomous ? -90 : -180), isAccellerated);
+    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, GetRobotAngle());
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {
@@ -79,11 +74,11 @@ public:
    * NavX2 yaw angle
    * -180 - 180 degrees
    * */
-  double getOffsetRobotAngle(double offset)
+  double getRobotAngle()
   {
-    offsetAngle = navXAngle + offset;
-    return (offsetAngle > 180) ? offsetAngle - 360 : (offsetAngle < -180) ? offsetAngle + 360
-                                                                          : offsetAngle;
+    robotAngle = navx.GetYaw() + offset;
+    robotAngle =  (robotAngle > 180) ? robotAngle - 360 : (robotAngle < -180) ? robotAngle + 360 : robotAngle;
+    return (params.isAutonomous ? -90 : -180);
   }
 
   void setPosition(Vector position)

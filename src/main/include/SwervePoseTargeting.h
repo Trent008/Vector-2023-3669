@@ -28,15 +28,8 @@ public:
     {   
         poseError = setpoint - swerve->getPose();
         swerveRate = poseError * Vector{positionProportional, angleProportional};
-        // use acceleration if the speed is not being accelerated by the Proportional
-        if (swerveRate.getPosition() > driveRate) {
-            useAcceleration = true;
-        } else {
-            useAcceleration = false;
-        }
-
         swerveRate.limit(Vector{driveRate, rotationRate});
-        swerve->Set(swerveRate, true, useAcceleration);
+        swerve->Set(swerveRate, true);
     }
 
     bool poseReached(double positionTolerance, double angleTolerance)

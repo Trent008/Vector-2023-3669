@@ -33,7 +33,7 @@ public:
         return res;
     }
 
-    Pose operator+(Vector const &obj)
+    Pose operator+(Vector obj)
     {
         Pose res;
         res.position = position + obj;
@@ -113,11 +113,10 @@ private:
 
 public:
     // arm position, cup state, wrist angle, twist angle
-    ArmPose(Vector position = {-9, 11}, bool suctionCupState = false, double wrist = 0, double twist = 0)
+    ArmPose(Vector position = {-9, 11}, double wrist = 0, bool suctionCupState = false)
     {
         this->position = position;
         this->wrist = wrist;
-        this->twist = twist;
         this->suctionCupState = suctionCupState;
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "PoseTypes.h"
+#include "Parameters.h"
 #include "rev/CANSparkMax.h"
 #include "ctre/phoenix.h"
 #include "frc/Solenoid.h"
@@ -233,12 +234,12 @@ public:
         suctionCupState = !suctionCupState;
     }
 
-    void setArmPosition(ArmPose armPose = {}, bool isAutonomous = false)
+    void setArmPosition(ArmPose armPose = {})
     {
         targetPosition = origin + armPose.getPosition();
         j4UserSetpoint = armPose.getWrist();
-        j3Setpoint = armPose.getTwist();
-        if (isAutonomous)
+        j3Setpoint = 0;
+        if (params.isAutonomous)
         {
             suctionCupState = armPose.getSuctionCupState();
         }
