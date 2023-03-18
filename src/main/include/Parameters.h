@@ -7,9 +7,9 @@
 ArmPose home(bool isCone, bool isHoldingObject) {
     if (isCone)
     {
-        return ArmPose{{-9, 15}, isHoldingObject, 8, 0};
+        return ArmPose{{-9, 11}, isHoldingObject, 8, 0};
     }
-    return ArmPose{{-9, 17}, isHoldingObject, 8, 0};
+    return ArmPose{{-9, 11}, isHoldingObject, 8, 0};
 }
 
 ArmPose floor(bool isCone) {
@@ -24,9 +24,9 @@ ArmPose floor(bool isCone) {
 ArmPose top(bool isCone) {
     if (isCone)
     {
-        return {{35.5, 51}, true, 0, 0};
+        return {{37, 54}, true, 0, 0};
     }
-    return {{30, 45}, true, 0, 0};
+    return {{33, 45}, true, 0, 0};
 }
 
 // lower pole or cube slot
@@ -51,7 +51,7 @@ ArmPose bottom(bool isCone) {
 ArmPose feederStation(bool isCone) {
     if (isCone)
     {
-        return {{15, 43}, true, 0, 0};
+        return {{15, 44}, true, 0, 0};
     }
     return {{15, 43}, true, 0, 0};
 }
@@ -61,7 +61,7 @@ struct Parameters
 {
     Pose startingPose = {Vector{75, 96}, -90};
     // set ramp
-    double robotAccel = 0.03;     // acceleration rate of the robot speed on the field
+    double robotAccel = 0.05;     // acceleration rate of the robot speed on the field
     double robotTurnAccel = 0.03; // acceleration rate of robot steering rate
 
     Vector drop = {0, -5}; //{0, -7}

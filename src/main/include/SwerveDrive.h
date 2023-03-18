@@ -2,7 +2,6 @@
 #include "FOC.h"
 #include "SwerveModule.h"
 #include "Parameters.h"
-#include "frc/smartdashboard/SmartDashboard.h"
 
 /**
  * creates a swerve drive object that controls
