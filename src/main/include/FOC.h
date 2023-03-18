@@ -14,8 +14,8 @@ class FOC
 private:
     Pose fieldVelocity;             // smoothed/accellerated field velocity
     Vector robotVelocity;           // field re-oriented velocity
-    double rotationalAccelleration = params.rotationalAccelleration; // rate to accelerate the rotation rate input
-    double velocityAccelleration = params.velocityAccelleration;   // rate to accelerate the velocity input
+    double rotationalAccelleration = params.robotTurnAccel; // rate to accelerate the rotation rate input
+    double velocityAccelleration = params.robotAccel;   // rate to accelerate the velocity input
 
 public:
     /**

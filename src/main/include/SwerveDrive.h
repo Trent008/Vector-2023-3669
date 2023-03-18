@@ -1,5 +1,6 @@
 #pragma once
 #include "FOC.h"
+#include "AHRS.h"
 #include "SwerveModule.h"
 
 /**
@@ -21,7 +22,7 @@ private:
   Vector averagePositionChange;            // average module velocity
   Vector fieldLocation = params.startingPose.getPosition(); // field location in inches from the starting point
   AHRS navx{frc::SPI::Port::kMXP};         // NavX V2 object
-  double robotAngle
+  double robotAngle;
 public:
   FOC *mc; // updates the robot velocity and rotation rate
 
@@ -39,7 +40,7 @@ public:
    **/
   void Set(Pose fieldPoseVelocity = {})
   {
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, GetRobotAngle());
+    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getRobotAngle(params.isAutonomous ? -90 : -180));
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {
@@ -59,7 +60,7 @@ public:
       module[i]->Set(moduleVelocity[i]);       // drive the modules
 
       fieldwheelPositionChange = module[i]->getwheelPositionChange(); // get the wheel velocity
-      fieldwheelPositionChange.rotate(getOffsetRobotAngle(-90));      // orient the wheel velocity in the robot's direction
+      fieldwheelPositionChange.rotate(getRobotAngle(-90));      // orient the wheel velocity in the robot's direction
       averagePositionChange += fieldwheelPositionChange;              // add the wheel velocity to the total sum
     }
     averagePositionChange /= 4; // find the average position change
@@ -74,11 +75,11 @@ public:
    * NavX2 yaw angle
    * -180 - 180 degrees
    * */
-  double getRobotAngle()
+  double getRobotAngle(double offset)
   {
     robotAngle = navx.GetYaw() + offset;
     robotAngle =  (robotAngle > 180) ? robotAngle - 360 : (robotAngle < -180) ? robotAngle + 360 : robotAngle;
-    return (params.isAutonomous ? -90 : -180);
+    return robotAngle;
   }
 
   void setPosition(Vector position)
@@ -93,7 +94,7 @@ public:
 
   Pose getPose()
   {
-    return Pose{fieldLocation, getOffsetRobotAngle(-90)};
+    return Pose{fieldLocation, getRobotAngle(-90)};
   }
 
   Vector getPosition()

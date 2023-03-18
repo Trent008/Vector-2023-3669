@@ -55,7 +55,7 @@ void Robot::AutonomousPeriodic()
   }
   swerveTargeting.targetPose(params.setpoints[i].pose, params.setpoints[i].driveRate, params.setpoints[i].rotationRate);
   // set the arm pose
-  arm.setArmPosition(params.setpoints[i].armPose, true);
+  arm.setArmPosition(params.setpoints[i].armPose);
   arm.run(t > 25);
   // go to next setpoint if this setpoint has been reached
   if (arm.poseReached(1) && swerveTargeting.poseReached(3, 5) && (i < 14))

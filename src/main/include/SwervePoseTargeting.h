@@ -29,7 +29,7 @@ public:
         poseError = setpoint - swerve->getPose();
         swerveRate = poseError * Vector{positionProportional, angleProportional};
         swerveRate.limit(Vector{driveRate, rotationRate});
-        swerve->Set(swerveRate, true);
+        swerve->Set(swerveRate);
     }
 
     bool poseReached(double positionTolerance, double angleTolerance)
