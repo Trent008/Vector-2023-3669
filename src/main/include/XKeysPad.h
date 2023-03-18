@@ -29,18 +29,18 @@ public:
     }
     
     bool getFeederStationPressed() {
-        return joy->GetRawButtonPressed(4);
+        return joy->GetRawButtonPressed(5);
     }
 
     bool getFloorPressed() {
-        return joy->GetRawButtonPressed(5);
+        return joy->GetRawButtonPressed(4);
     }
 
     bool getHomePressed() {
         return joy->GetRawButtonPressed(6);
     }
     
-    bool getIsConePressed() {
-        return joy->GetRawButtonPressed(8);
+    bool getIsCone() {
+        return joy->GetRawButton(8);
     }
 };

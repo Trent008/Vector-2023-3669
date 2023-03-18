@@ -78,9 +78,7 @@ void Robot::TeleopPeriodic()
   SMPro.update();
   
   // switch between cone mode and cube mode
-  if (buttonPad.getIsConePressed()) {
-    isCone = !isCone; 
-  }
+  arm.setCupState(buttonPad.getIsCone());
 
   // arm position buttons
   if (buttonPad.getFloorPressed())
@@ -93,6 +91,12 @@ void Robot::TeleopPeriodic()
   {
     arm.setArmPosition(feederStation(isCone));
     armSetpointType = 2;
+    isHomingFromFloor = false;
+  }
+  if (buttonPad.getLowRowPressed())
+  {
+    arm.setArmPosition(bottom(isCone));
+    armSetpointType = 3;
     isHomingFromFloor = false;
   }
   if (buttonPad.getMidRowPressed())
