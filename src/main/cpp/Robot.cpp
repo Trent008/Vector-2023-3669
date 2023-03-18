@@ -75,71 +75,71 @@ void Robot::TeleopPeriodic()
 {
   swerve.Set(xboxC.getFieldVelocity());
 
-  // SMPro.update();
+  SMPro.update();
   
-  // if (SMPro.getMenuPressed())
-  // {
-  //   arm.toggleCupState();
-  // }
+  if (SMPro.getMenuPressed())
+  {
+    arm.toggleCupState();
+  }
 
-  // // switch between cone mode and cube mode
-  // if (SMPro.getShiftPressed()) {
-  //   isCone = !isCone; 
-  // }
+  // switch between cone mode and cube mode
+  if (SMPro.getShiftPressed()) {
+    isCone = !isCone; 
+  }
 
-  // // arm position buttons
-  // if (SMPro.getAltPressed())
-  // {
-  //   arm.setArmPosition(floor(isCone));
-  //   armSetpointType = 1;
-  //   isHomingFromFloor = false;
-  // }
-  // if (SMPro.getESCPressed())
-  // {
-  //   arm.setArmPosition(feederStation(isCone));
-  //   armSetpointType = 2;
-  //   isHomingFromFloor = false;
-  // }
-  // if (SMPro.get1Pressed())
-  // {
-  //   arm.setArmPosition(middle(isCone));
-  //   armSetpointType = 3;
-  //   isHomingFromFloor = false;
-  // }
-  // if (SMPro.get2Pressed())
-  // {
-  //   arm.setArmPosition(top(isCone));
-  //   armSetpointType = 3;
-  //   isHomingFromFloor = false;
-  // }
-  // if (SMPro.getCTRLPressed())
-  // {
-  //   if (armSetpointType == 0)
-  //   {
-  //     arm.setArmPosition(home(isCone));
-  //   }
-  //   if (armSetpointType == 1)
-  //   {
-  //     isHomingFromFloor = true;
-  //     arm.setArmPosition(ArmPose{{8, 16}, 10, true});
-  //   }
-  //   if (armSetpointType == 2)
-  //   {
-  //     arm.setArmPosition(home(isCone));
-  //   }
-  //   if (armSetpointType == 3)
-  //   {
-  //     arm.setArmPosition(home(isCone));
-  //   }
+  // arm position buttons
+  if (SMPro.getAltPressed())
+  {
+    arm.setArmPosition(floor(isCone));
+    armSetpointType = 1;
+    isHomingFromFloor = false;
+  }
+  if (SMPro.getESCPressed())
+  {
+    arm.setArmPosition(feederStation(isCone));
+    armSetpointType = 2;
+    isHomingFromFloor = false;
+  }
+  if (SMPro.get1Pressed())
+  {
+    arm.setArmPosition(middle(isCone));
+    armSetpointType = 3;
+    isHomingFromFloor = false;
+  }
+  if (SMPro.get2Pressed())
+  {
+    arm.setArmPosition(top(isCone));
+    armSetpointType = 3;
+    isHomingFromFloor = false;
+  }
+  if (SMPro.getCTRLPressed())
+  {
+    if (armSetpointType == 0)
+    {
+      arm.setArmPosition(home(isCone));
+    }
+    if (armSetpointType == 1)
+    {
+      isHomingFromFloor = true;
+      arm.setArmPosition(ArmPose{{8, 16}, 10, true});
+    }
+    if (armSetpointType == 2)
+    {
+      arm.setArmPosition(home(isCone));
+    }
+    if (armSetpointType == 3)
+    {
+      arm.setArmPosition(home(isCone));
+    }
     
-  //   armSetpointType = 0;
-  // }
-  // arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
-  // if (isHomingFromFloor && arm.poseReached(1))
-  // {
-  //   isHomingFromFloor = false;
-  //   arm.setArmPosition(home(isCone));
-  // }
+    armSetpointType = 0;
+  }
+  arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
+  if (isHomingFromFloor && arm.poseReached(1))
+  {
+    isHomingFromFloor = false;
+    arm.setArmPosition(home(isCone));
+  }
 }
 
 void Robot::DisabledInit() {}
