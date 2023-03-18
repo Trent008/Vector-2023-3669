@@ -12,16 +12,20 @@ void Robot::RobotInit()
   driveMotor2.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
   driveMotor3.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
   driveMotor4.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
+
   // arm PID config
-    arm.left_J1.SetP(0.1);
-    arm.right_J1.SetP(0.1);
-    arm.j2.SetP(0.05);
-    arm.j3.SetP(0.1);
-    arm.j4.SetP(0.1);
+  left_J1.SetP(0.1);
+  right_J1.SetP(0.1);
+  j2.SetP(0.1);
+  j3.SetP(0.1);
+  j4.SetP(0.1);
 }
 
-void Robot::RobotPeriodic(){
-  frc::SmartDashboard::PutBoolean("object type:", isCone);
+void Robot::RobotPeriodic()
+{
+  frc::SmartDashboard::PutNumber("x", swerve.getPosition().getX());
+  frc::SmartDashboard::PutNumber("y", swerve.getPosition().getY());
+  frc::SmartDashboard::PutNumber("a", swerve.getOffsetRobotAngle(-90));
 }
 
 void Robot::AutonomousInit()
@@ -37,25 +41,30 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
   // move the swerve drive twards the next setpoint
-  if (params.setpoints[i].useLimelight)
-  {
-    if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
-    {
-      swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
-    }
-    if (limelight_left.GetRobotPosition() > 10)
-    {
-      swerve.setPosition(limelight_left.GetRobotPosition());
-    }
-    if (limelight_right.GetRobotPosition() > 10)
-    {
-      swerve.setPosition(limelight_right.GetRobotPosition());
-    }
-  }
-  swerveTargeting.targetPose(params.setpoints[i].pose, params.setpoints[i].driveRate, params.setpoints[i].rotationRate);
-  // set the arm pose
-  arm.setArmPosition(params.setpoints[i].armPose, true);
-  arm.run(t > 25);
+  // if (limelight.GetRobotPosition() > 10)
+  // {
+  //   swerve.setPosition(limelight.GetRobotPosition());
+  // }
+  swerveTargeting.targetPose(setpoints[i].pose, setpoints[i].driveRate, setpoints[i].rotationRate);
+  // turn the pumps on/off if vacuum is low/high
+  pump1.Set(arm.getPump(pressure1.Get()));
+  pump2.Set(arm.getPump(pressure2.Get()));
+  // set the suction cups
+  isHoldingCone = setpoints[i].suctionCupState;
+  suctionCup1.Set(isHoldingCone);
+  suctionCup2.Set(isHoldingCone);
+  // set the arm position and angle
+  arm.setArmPosition(setpoints[i].armPosition, setpoints[i].wristAngle);
+  arm.update(t > 25);
+  // screw = j1
+  // extension = j2
+  // twisting = j3
+  // wrist = j4
+  left_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
+  right_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
+  j2.SetReference(arm.GetJ2(), rev::CANSparkMax::ControlType::kPosition);
+  j3.SetReference(arm.GetJ3(), rev::CANSparkMax::ControlType::kPosition);
+  j4.SetReference(arm.GetJ4(), rev::CANSparkMax::ControlType::kPosition);
   // go to next setpoint if this setpoint has been reached
   if (arm.poseReached(1) && swerveTargeting.poseReached(3, 5) && (i < 14))
   {
@@ -74,70 +83,66 @@ void Robot::TeleopPeriodic()
   // zero the yaw if the zeroing button is pressed
   if (SMPro.getMenuPressed())
   {
-    arm.toggleCupState();
+    swerve.zeroYaw();
   }
 
   // get user input
   SMPro.update();
+  // if (limelight.GetRobotPosition() - swerve.getPosition() < 24)
+  // {
+  //   swerve.setPosition(limelight.GetRobotPosition());
+  // }
   swerve.Set(xboxC.getFieldVelocity());
 
-  // switch between cone mode and cube mode
-  if (SMPro.getShiftPressed()) {
-    isCone = !isCone; 
-  }
+  // run the suction pumps
+  pump1.Set(arm.getPump(pressure1.Get()));
+  pump2.Set(arm.getPump(pressure2.Get()));
+  // pickup/drop cone
+  isHoldingCone = (SMPro.getCTRLPressed()) ? !isHoldingCone : isHoldingCone;
+  suctionCup1.Set(isHoldingCone);
+  suctionCup2.Set(isHoldingCone);
+
+  // set arm PID references
+  left_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
+  right_J1.SetReference(arm.GetJ1(), rev::CANSparkMax::ControlType::kPosition);
+  j2.SetReference(arm.GetJ2(), rev::CANSparkMax::ControlType::kPosition);
+  j3.SetReference(arm.GetJ3(), rev::CANSparkMax::ControlType::kPosition);
+  j4.SetReference(arm.GetJ4(), rev::CANSparkMax::ControlType::kPosition);
 
   // arm position buttons
   if (SMPro.getAltPressed())
   {
-    arm.setArmPosition(floor(isCone));
-    armSetpointType = 1;
-    //isHomingFromFloor = false;
-  }
-  if (SMPro.getESCPressed())
-  {
-    arm.setArmPosition(feederStation(isCone));
-    armSetpointType = 2;
-    //isHomingFromFloor = false;
+    arm.setArmPosition({10, 7}, -7, 0);
   }
   if (SMPro.get1Pressed())
   {
-    arm.setArmPosition(middle(isCone));
-    armSetpointType = 3;
-    //isHomingFromFloor = false;
+    arm.setArmPosition(cone1, 0, 0);
   }
   if (SMPro.get2Pressed())
   {
-    arm.setArmPosition(top(isCone));
-    armSetpointType = 3;
-    //isHomingFromFloor = false;
+    arm.setArmPosition(cone2, 0, 0);
   }
-  if (SMPro.getCTRLPressed())
+  if (SMPro.get3Pressed())
   {
-    if (armSetpointType == 0)
-    {
-      arm.setArmPosition(home(isCone, !arm.GetSuctionCupState()));
-    }
-    if (armSetpointType == 1)
-    {
-      isHomingFromFloor = true;
-      arm.setArmPosition(ArmPose{{8, 16}, true, 10});
-    }
-    if (armSetpointType == 2)
-    {
-      arm.setArmPosition(home(isCone, true));
-    }
-    if (armSetpointType == 3)
-    {
-      arm.setArmPosition(home(isCone, false));
-    }
-    
-    armSetpointType = 0;
+    arm.setArmPosition(cube1, 0, 0);
   }
-  arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
-  if (isHomingFromFloor && arm.poseReached(1))
+  if (SMPro.get4Pressed())
   {
-    isHomingFromFloor = false;
-    arm.setArmPosition(home(isCone, true));
+    arm.setArmPosition(cube2, 0, 0);
+  }
+  if (SMPro.getShiftPressed())
+  {
+    isHoming = true;
+    arm.setArmPosition(Vector{8, 14}, 10, 0);
+  }
+  if (SMPro.getESCPressed()) {
+    arm.setArmPosition(loadingStation, -8);
+  }
+  arm.update(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
+  if (isHoming && arm.poseReached(1))
+  {
+    isHoming = false;
+    arm.setArmPosition(home, 10, 0);
   }
 }
 

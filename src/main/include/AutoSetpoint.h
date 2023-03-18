@@ -1,12 +1,12 @@
 #pragma once
-#include "PoseTypes.h"
-
-// pose, armPose, useLimelight, driveRate, rotationRate
+#include "Parameters.h"
+// pose, armPosition, suction, wrist, driveRate, rotationRate
 struct AutoSetpoint
 {
-    Pose pose;
-    ArmPose armPose = ArmPose{Vector{-9, 9.75}, false, 0};
-    bool useLimelight = false;
-    double driveRate = .25;
-    double rotationRate = 0.25;
+    Pose pose = params.startingPose;
+    Vector armPosition = {-9, 9.75};
+    bool suctionCupState = false;
+    double wristAngle = 0;
+    double driveRate = 15;
+    double rotationRate = 15;
 };

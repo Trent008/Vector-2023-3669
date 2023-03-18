@@ -1,6 +1,6 @@
 #pragma once
 #include "frc/Joystick.h"
-#include "PoseTypes.h"
+#include "Pose.h"
 
 class XBOXController
 {
@@ -8,7 +8,7 @@ private:
     frc::Joystick *joy;
     double nominalSpeed = 0.15;
     double nominalRotationRate = 0.1;
-    double speed = 0.8;
+    double speed = 1.0;
     double rotationSpeed = 0.4;
     double deadband = 0.03;
     double a;

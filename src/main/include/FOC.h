@@ -1,7 +1,7 @@
 // Field Oriented Control and Motion Smoothing
 #pragma once
 #include "AHRS.h"
-#include "PoseTypes.h"
+#include "Pose.h"
 
 /**
  * Field Oriented Control:
@@ -28,9 +28,9 @@ public:
      *  sets the field oriented and smoothed x velocity,
      *  y velocity, and rotation rate for the robot
      * */
-    Pose getRobotPoseVelocity(Pose velocitySetpoint, double navXAngle, bool isAccelerated)
+    Pose getRobotPoseVelocity(Pose velocitySetpoint, double navXAngle, bool isAutonomous)
     {
-        if (isAccelerated)
+        if (!isAutonomous)
         {
             fieldVelocity.moveToward(velocitySetpoint, velocityAccelleration, rotationalAccelleration);
             /**------------Field Oriented Control------------**/
@@ -42,8 +42,7 @@ public:
         {
             robotVelocity = velocitySetpoint.getPosition();
             robotVelocity.rotate(-navXAngle);
-            fieldVelocity = {robotVelocity, velocitySetpoint.getAngle()};
-            return fieldVelocity;
+            return Pose{robotVelocity, velocitySetpoint.getAngle()};
         }
     }
 };
