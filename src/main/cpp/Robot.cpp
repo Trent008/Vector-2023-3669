@@ -78,36 +78,36 @@ void Robot::TeleopPeriodic()
   SMPro.update();
   
   // switch between cone mode and cube mode
-  arm.setCupState(buttonPad.getIsCone());
+  arm.setCupState(buttonPad.getSuctionCupState());
 
   // arm position buttons
   if (buttonPad.getFloorPressed())
   {
-    arm.setArmPosition(floor(isCone));
+    arm.setArmPosition(floor(buttonPad.getIsCone()));
     armSetpointType = 1;
     isHomingFromFloor = false;
   }
   if (buttonPad.getFeederStationPressed())
   {
-    arm.setArmPosition(feederStation(isCone));
+    arm.setArmPosition(feederStation(buttonPad.getIsCone()));
     armSetpointType = 2;
     isHomingFromFloor = false;
   }
   if (buttonPad.getLowRowPressed())
   {
-    arm.setArmPosition(bottom(isCone));
+    arm.setArmPosition(bottom(buttonPad.getIsCone()));
     armSetpointType = 3;
     isHomingFromFloor = false;
   }
   if (buttonPad.getMidRowPressed())
   {
-    arm.setArmPosition(middle(isCone));
+    arm.setArmPosition(middle(buttonPad.getIsCone()));
     armSetpointType = 3;
     isHomingFromFloor = false;
   }
   if (buttonPad.getHiRowPressed())
   {
-    arm.setArmPosition(top(isCone));
+    arm.setArmPosition(top(buttonPad.getIsCone()));
     armSetpointType = 3;
     isHomingFromFloor = false;
   }
@@ -115,7 +115,7 @@ void Robot::TeleopPeriodic()
   {
     if (armSetpointType == 0)
     {
-      arm.setArmPosition(home(isCone));
+      arm.setArmPosition(home(buttonPad.getIsCone()));
     }
     if (armSetpointType == 1)
     {
@@ -124,11 +124,11 @@ void Robot::TeleopPeriodic()
     }
     if (armSetpointType == 2)
     {
-      arm.setArmPosition(home(isCone));
+      arm.setArmPosition(home(buttonPad.getIsCone()));
     }
     if (armSetpointType == 3)
     {
-      arm.setArmPosition(home(isCone));
+      arm.setArmPosition(home(buttonPad.getIsCone()));
     }
     
     armSetpointType = 0;
@@ -138,7 +138,7 @@ void Robot::TeleopPeriodic()
   if (isHomingFromFloor && arm.poseReached(1))
   {
     isHomingFromFloor = false;
-    arm.setArmPosition(home(isCone));
+    arm.setArmPosition(home(buttonPad.getIsCone()));
   }
 }
 
