@@ -33,12 +33,12 @@ public:
         return res;
     }
 
-    Pose operator+(Vector obj)
-    {
-        Pose res;
-        res.position = position + obj;
-        res.angle = angle;
-    }
+    // Pose operator+(Vector obj)
+    // {
+    //     Pose res;
+    //     res.position = position + obj;
+    //     res.angle = angle;
+    // }
 
     void operator*=(Vector &obj)
     {

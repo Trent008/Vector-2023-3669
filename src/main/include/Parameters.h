@@ -78,10 +78,10 @@ struct Parameters
      */
     AutoSetpoint setpoints[15] =
         {
-            {p1 + offset, top(1), false},
+            {p1, top(1), false},
             {p1, top(1), false},
             {p1, top(1) + drop, false},
-            {chargingStation + Vector{70}, home(1), false},
+            {chargingStation, home(1), false},
             {chargingStation, home(1), false},
             {chargingStation, home(1), false},
             {chargingStation, home(1), false},
