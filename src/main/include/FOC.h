@@ -1,6 +1,5 @@
 // Field Oriented Control and Motion Smoothing
 #pragma once
-#include "PoseTypes.h"
 #include "Parameters.h"
 
 /**

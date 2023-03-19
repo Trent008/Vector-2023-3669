@@ -1,9 +1,8 @@
 #pragma once
 #include "ctre/phoenix.h"
 #include "Vector.h"
-#include "AngleChooser.h"
+#include "AngleOptimization.h"
 #include "rev/CANSparkMax.h"
-#include <frc/smartdashboard/SmartDashboard.h>
 
 class SwerveModule
 {
@@ -13,11 +12,10 @@ private:
     double wheelSpeed = 0;
     double angleError = 0;
     double steeringMotorP; // proportional value determines how quickly the steering responds to angle setpoints
-    double option[4];
     double angleWheel, angleSetpoint;
     double lastPosition = 0;
     double currentPosition;
-    AngleChooser angleChooser{};
+    AngleOptimizer angleChooser{};
     WPI_TalonFX *driveMotor;
     rev::CANSparkMax *steeringMotor;
     CANCoder *wheelEncoder;
@@ -34,7 +32,6 @@ public:
         this->driveMotor = driveMotor;
         this->steeringMotor = steeringMotor;
         this->wheelEncoder = wheelEncoder;
-        this->steeringMotorP = steeringMotorP;
         turnVector = position;
         turnVector.rotate(90);
     }

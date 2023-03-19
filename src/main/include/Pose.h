@@ -1,6 +1,6 @@
 #pragma once
 #include "Vector.h"
-#include "AngleChooser.h"
+#include "AngleOptimization.h"
 
 // object that contains a vector for position, and a double for angle
 class Pose
@@ -10,7 +10,7 @@ private:
     double angle;
     Vector positionError;
     double angleError;
-    AngleChooser optimize;
+    AngleOptimizer optimize;
 
 public:
     Pose(Vector position = {}, double angle = 0)
@@ -29,16 +29,16 @@ public:
     {
         Pose res;
         res.position = position - obj.position;
-        res.angle = optimize.getShortestDirection(obj.angle, angle);
+        res.angle = getDifference(angle, obj.angle);
         return res;
     }
 
-    // Pose operator+(Vector obj)
-    // {
-    //     Pose res;
-    //     res.position = position + obj;
-    //     res.angle = angle;
-    // }
+    Pose operator+(Pose const &obj)
+    {
+        Pose res;
+        res.position = position + obj.position;
+        res.angle = angle + obj.angle;
+    }
 
     void operator*=(Vector &obj)
     {
@@ -87,7 +87,7 @@ public:
         {
             position += positionError / 2;
         }
-        angleError = optimize.getShortestDirection(angle, target.angle);
+        angleError = getDifference(target.angle, angle);
         if (std::abs(angleError) > 2 * angleSpeed)
         {
             angle += angleError / std::abs(angleError) * angleSpeed;
@@ -100,49 +100,5 @@ public:
 
     void setPosition(Vector position) {
         this->position = position;
-    }
-};
-
-class ArmPose
-{
-private:
-    Vector position;
-    double wrist;
-    double twist;
-    bool suctionCupState;
-
-public:
-    // arm position, cup state, wrist angle, twist angle
-    ArmPose(Vector position = {-9, 11}, double wrist = 0, bool suctionCupState = false)
-    {
-        this->position = position;
-        this->wrist = wrist;
-        this->suctionCupState = suctionCupState;
-    }
-
-    Vector getPosition()
-    {
-        return position;
-    }
-    
-    double getWrist() {
-        return wrist;
-    }
-
-    double getTwist() {
-        return twist;
-    }
-
-    bool getSuctionCupState() {
-        return suctionCupState;
-    }
-
-    ArmPose operator+(Vector const &obj)
-    {
-        ArmPose res;
-        res.position = position + obj;
-        res.wrist = wrist;
-        res.twist = twist;
-        res.suctionCupState = suctionCupState;
     }
 };
