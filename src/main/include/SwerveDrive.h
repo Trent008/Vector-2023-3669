@@ -14,12 +14,12 @@ class SwerveDrive
 {
 private:
   SwerveModule *module[4]; // array of 4 swerve modules
-  Pose robotPoseVelocity;
+  Pose robotVelocity;
   Vector moduleVelocity[4];                // stores the velocity of all 4 modules
-  Vector moduleTurnVector;                 // stores the turn-vector value for each module in turn
-  Vector fieldwheelPositionChange;         // stores the velocity of each wheel in encoders/100ms in turn
-  Vector largestVector;                    // fastest module velocity to be scaled to <= 1
-  Vector averagePositionChange;            // average module velocity
+  Vector moduleTurnVector;                 // stores each module's turn-vector value in turn
+  Vector fieldwheelPositionChange;         // stores the encoder position change vector of each wheel in turn
+  Vector largestVector;                    // fastest module velocity to be limited to 1
+  Vector averagePositionChange;            // average module position change
   Vector fieldLocation = params.startingPose.getPosition(); // field location in inches from the starting point
   AHRS navx{frc::SPI::Port::kMXP};         // NavX V2 object
   double robotAngle;
@@ -38,14 +38,14 @@ public:
   /**
    * runs the swerve modules using the values from the motion controller
    **/
-  void Set(Pose fieldPoseVelocity = {})
+  void Set(Pose fieldVelocity = {})
   {
-    robotPoseVelocity = mc->getRobotPoseVelocity(fieldPoseVelocity, getRobotAngle(params.isAutonomous ? -90 : -180));
+    robotVelocity = mc->getRobotVelocity(fieldVelocity, getRobotAngle(params.isAutonomous ? -90 : -180));
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {
-      moduleTurnVector = module[i]->getTurnVector() * robotPoseVelocity.getAngle();
-      moduleVelocity[i] = robotPoseVelocity.getPosition() + moduleTurnVector;
+      moduleTurnVector = module[i]->getTurnVector() * robotVelocity.getAngle();
+      moduleVelocity[i] = robotVelocity.getPosition() + moduleTurnVector;
       if (moduleVelocity[i] > largestVector)
       {
         largestVector = moduleVelocity[i];

@@ -13,6 +13,10 @@ class AngleOptimizer
         double direction;
         double shortest;
     public:
+        /**
+         * returns the difference between the setpoint angle and the current angle
+         * when facing forward or backward is allowed
+        */
         double getShortestAngle(double current, double setpoint) {
             option[0] = setpoint - current;
             option[1] = option[0] + (std::signbit(option[0]) ? 360 : -360);
@@ -35,6 +39,10 @@ class AngleOptimizer
 
 double difference;
 
+/**
+ * returns the difference between the setpoint angle and the current angle
+ * when facing forward only is allowed
+*/
 double getDifference(double setpoint, double current)
 {
     difference = setpoint - current;
