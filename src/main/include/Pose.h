@@ -38,6 +38,7 @@ public:
         Pose res;
         res.position = position + obj.position;
         res.angle = angle + obj.angle;
+        return res;
     }
 
     void operator*=(Vector &obj)

@@ -32,7 +32,6 @@ public:
 
   /* -------- arm controller types -------- */
   SpaceMousePro SMPro{&armController, 20};
-  SpaceMouseEnt SMEnt{&armController};
 
 
   /* -------- swerve drive motors -------- */
@@ -71,6 +70,12 @@ public:
   bool lastButtonState = false;
 
   ArmController arm{};
+
+  frc::Solenoid yellowLeft{frc::PneumaticsModuleType::REVPH, 14};
+  frc::Solenoid yellowRight{frc::PneumaticsModuleType::REVPH, 1};
+  frc::Solenoid blueLeft{frc::PneumaticsModuleType::REVPH, 13};
+  frc::Solenoid blueRight{frc::PneumaticsModuleType::REVPH, 7};
+
 
   void RobotInit() override;
   void RobotPeriodic() override;

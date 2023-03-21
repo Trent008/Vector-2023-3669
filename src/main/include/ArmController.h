@@ -30,7 +30,7 @@ private:
     Vector error;
     double positionRate = 0.8;
     double j3Rate = 4;
-    double j4Rate = 4;
+    double j4Rate = 2;
     double j2Length;
     double startingJ1Length;
     double j1SetpointInches;
@@ -233,7 +233,7 @@ public:
         suctionCupState = state;
     }
 
-    void setPose(Pose armPose = {})
+    void setPose(Pose armPose)
     {
         targetPosition = origin + armPose.getPosition();
         j4UserSetpoint = armPose.getAngle();

@@ -35,21 +35,21 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
   // move the swerve drive twards the next setpoint
-  if (params.setpoints[i].useLimelight)
-  {
-    if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
-    {
-      swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
-    }
-    if (limelight_left.GetRobotPosition() > 10)
-    {
-      swerve.setPosition(limelight_left.GetRobotPosition());
-    }
-    if (limelight_right.GetRobotPosition() > 10)
-    {
-      swerve.setPosition(limelight_right.GetRobotPosition());
-    }
-  }
+  // if (params.setpoints[i].useLimelight)
+  // {
+  //   if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
+  //   {
+  //     swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
+  //   }
+  //   if (limelight_left.GetRobotPosition() > 10)
+  //   {
+  //     swerve.setPosition(limelight_left.GetRobotPosition());
+  //   }
+  //   if (limelight_right.GetRobotPosition() > 10)
+  //   {
+  //     swerve.setPosition(limelight_right.GetRobotPosition());
+  //   }
+  // }
   swerveTargeting.targetPose(params.setpoints[i].pose, params.setpoints[i].driveRate, params.setpoints[i].rotationRate);
   // set the arm pose
   arm.setPose(params.setpoints[i].armPose);
@@ -65,17 +65,22 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
   params.isAutonomous = false;
-  // SMPro.initialize();
+  SMPro.initialize();
 }
 
 void Robot::TeleopPeriodic()
 {
   swerve.Set(xboxC.getFieldVelocity());
 
-  // SMPro.update();
+  SMPro.update();
   
   // switch between cone mode and cube mode
   arm.setCupState(buttonPad.getSuctionCupState());
+
+  yellowLeft.Set(buttonPad.getIsCone());
+  yellowRight.Set(buttonPad.getIsCone());
+  blueLeft.Set(!buttonPad.getIsCone());
+  blueRight.Set(!buttonPad.getIsCone());
 
   // arm position buttons
   if (buttonPad.getHomePressed())
@@ -124,7 +129,7 @@ void Robot::TeleopPeriodic()
   }
   
   arm.setCupState(buttonPad.getSuctionCupState());
-  arm.run(true, Vector{SMEnt.getY(), SMEnt.getZ()}, SMEnt.getYR(), SMEnt.getXR());
+  arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
   if (armSetpoint1 == 4 && arm.poseReached(1))
   {
     arm.setPose(armPresets[armSetpoint2][buttonPad.getIsCone()]);

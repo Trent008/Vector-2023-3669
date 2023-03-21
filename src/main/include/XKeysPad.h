@@ -17,27 +17,27 @@ public:
     }
 
     bool getHiRowPressed() {
-        return joy->GetRawButtonPressed(3);
+        return joy->GetRawButton(3);
     }
     
     bool getMidRowPressed() {
-        return joy->GetRawButtonPressed(2);
+        return joy->GetRawButton(2);
     }
     
     bool getLowRowPressed() {
-        return joy->GetRawButtonPressed(1);
+        return joy->GetRawButton(1);
     }
     
     bool getFeederStationPressed() {
-        return joy->GetRawButtonPressed(5);
+        return joy->GetRawButton(5);
     }
 
     bool getFloorPressed() {
-        return joy->GetRawButtonPressed(4);
+        return joy->GetRawButton(4);
     }
 
     bool getHomePressed() {
-        return joy->GetRawButtonPressed(6);
+        return joy->GetRawButton(6);
     }
     
     bool getIsCone() {
