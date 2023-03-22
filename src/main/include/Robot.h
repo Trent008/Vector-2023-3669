@@ -17,7 +17,7 @@ class Robot : public frc::TimedRobot
 
 public:
   int i = 0; // keeps track of the autonomous point index
-  int t = 0; // keeps track of the number of processer cycles
+  int cycles = 0; // keeps track of the number of processer cycles
 
   Limelight limelight_left{"left"};
   Limelight limelight_right{"right"};

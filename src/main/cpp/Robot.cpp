@@ -53,13 +53,14 @@ void Robot::AutonomousPeriodic()
   swerveTargeting.targetPose(params.setpoints[i].pose, params.setpoints[i].driveRate, params.setpoints[i].rotationRate);
   // set the arm pose
   arm.setPose(params.setpoints[i].armPose);
-  arm.run(t > 25);
+  arm.setCupState(params.setpoints[i].cupState);
+  arm.run(cycles > 25);
   // go to next setpoint if this setpoint has been reached
   if (arm.poseReached(1) && swerveTargeting.poseReached(3, 5) && (i < 14))
   {
     i++;
   }
-  t++;
+  cycles++;
 }
 
 void Robot::TeleopInit()
@@ -81,6 +82,10 @@ void Robot::TeleopPeriodic()
   yellowRight.Set(buttonPad.getIsCone());
   blueLeft.Set(!buttonPad.getIsCone());
   blueRight.Set(!buttonPad.getIsCone());
+
+  if (SMPro.getMenuPressed()) {
+    swerve.zeroYaw();
+  }
 
   // arm position buttons
   if (buttonPad.getHomePressed())
