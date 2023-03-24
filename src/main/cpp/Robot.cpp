@@ -56,7 +56,7 @@ void Robot::AutonomousPeriodic()
   arm.setCupState(params.setpoints[i].cupState);
   arm.run(cycles > 25);
   // go to next setpoint if this setpoint has been reached
-  if (arm.poseReached(1) && swerveTargeting.poseReached(3, 5) && (i < 14))
+  if (arm.poseReached(0.01) && swerveTargeting.poseReached(3, 5) && (i < 14))
   {
     i++;
   }
@@ -83,66 +83,65 @@ void Robot::TeleopPeriodic()
   blueLeft.Set(!buttonPad.getIsCone());
   blueRight.Set(!buttonPad.getIsCone());
 
-  if (SMPro.getMenuPressed()) {
-    swerve.zeroYaw();
-  }
+  // if (SMPro.getMenuPressed()) {
+  //   swerve.zeroYaw();
+  // }
 
   // arm position buttons
   if (buttonPad.getHomePressed())
   {
-    if (armSetpoint2 == 1 || armSetpoint2 == 5) {armSetpoint1 = 4;}
-    else {armSetpoint1 = 0;}
-    armSetpoint2 = 0;
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    as1 = (as2 == 1 || as2 == 5)? 4 : (as2 == 3)? 7 : 0;
+    as2 = 0;
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
   }
 
   if (buttonPad.getLowRowPressed())
   {
-    if (armSetpoint2 == 0) {armSetpoint1 = 4;}
-    else {armSetpoint1 = 1;}
-    armSetpoint2 = 1;
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    if (as2 == 0) {as1 = 4;}
+    else {as1 = 1;}
+    as2 = 1;
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
   }
 
   if (buttonPad.getMidRowPressed())
   {
-    armSetpoint1 = 2;
-    armSetpoint2 = 2;
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    as1 = 2;
+    as2 = 2;
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
   }
 
   if (buttonPad.getHiRowPressed())
   {
-    armSetpoint1 = 3;
-    armSetpoint2 = 3;
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    as1 = (as2 == 0)? 7 : 3;
+    as2 = 3;
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
   }
 
   if (buttonPad.getFloorPressed())
   {
-    if (armSetpoint2 == 0) {armSetpoint1 = 4;}
-    else {armSetpoint1 = 5;}
-    armSetpoint2 = 5;
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    if (as2 == 0) {as1 = 4;}
+    else {as1 = 5;}
+    as2 = 5;
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
   }
 
   if (buttonPad.getFeederStationPressed())
   {
-    armSetpoint1 = 6;
-    armSetpoint2 = 6;
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    as1 = 6;
+    as2 = 6;
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
   }
   
   arm.setCupState(buttonPad.getSuctionCupState());
-  arm.run(true, Vector{SMPro.getY(), SMPro.getZ()}, SMPro.getYR(), SMPro.getXR());
-  if (armSetpoint1 == 4 && arm.poseReached(1))
+  arm.run(true, Vector{SMEnt.getY(), SMEnt.getZ()}, SMEnt.getYR(), SMEnt.getXR());
+  if ((as1 == 4 || as1 == 7) && arm.poseReached(1))
   {
-    arm.setPose(armPresets[armSetpoint2][buttonPad.getIsCone()]);
-    armSetpoint1 = armSetpoint2;
+    arm.setPose(armPresets[as2][buttonPad.getIsCone()]);
+    as1 = as2;
   }
   if (buttonPad.getIsCone() != lastButtonState)
   {
-    arm.setPose(armPresets[armSetpoint1][buttonPad.getIsCone()]);
+    arm.setPose(armPresets[as1][buttonPad.getIsCone()]);
     lastButtonState = buttonPad.getIsCone();
   }
 }

@@ -27,11 +27,11 @@ public:
   frc::Joystick pad{2};
   /* ------ driving controller types ------ */
   XBOXController xboxC{&driveController};
-  // SpaceMouseEnt SMEnt{&driveController};
   XKeysPad buttonPad{&pad};
 
   /* -------- arm controller types -------- */
   SpaceMousePro SMPro{&armController, 20};
+  SpaceMouseEnt SMEnt{&armController};
 
 
   /* -------- swerve drive motors -------- */
@@ -65,8 +65,8 @@ public:
 
   
   bool isCone = true;
-  int armSetpoint1 = 0;
-  int armSetpoint2 = 0;
+  int as1 = 0; // first (current) arm setpoint
+  int as2 = 0; // second (final) arm setpoint
   bool lastButtonState = false;
 
   ArmController arm{};

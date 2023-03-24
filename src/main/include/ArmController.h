@@ -30,7 +30,7 @@ private:
     Vector error;
     double positionRate = 0.8;
     double j3Rate = 4;
-    double j4Rate = 2;
+    double j4Rate = 3;
     double j2Length;
     double startingJ1Length;
     double j1SetpointInches;
@@ -103,10 +103,10 @@ public:
             targetPosition = Vector{frame, floor};
         }
 
+        error = targetPosition - currentPosition;
 
         if (enabled) {
             /* -- moves the currentPosition toward the target currentPosition -- */
-            error = targetPosition - currentPosition;
             if (error > 2 * positionRate)
             {
                 currentPosition += error * positionRate / abs(error);
