@@ -128,8 +128,8 @@ public:
         return Pose{Vector{getLX(), getLY()}, getRX()};
     }
 
-    bool getAPressed()
+    bool zero()
     {
-        return joy->GetRawButtonPressed(1);
+        return joy->GetRawButton(1) && joy->GetRawButton(2) && joy->GetRawButton(3) && joy->GetRawButton(4);
     }
 };

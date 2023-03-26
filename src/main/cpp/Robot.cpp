@@ -83,9 +83,9 @@ void Robot::TeleopPeriodic()
   blueLeft.Set(!buttonPad.getIsCone());
   blueRight.Set(!buttonPad.getIsCone());
 
-  // if (SMPro.getMenuPressed()) {
-  //   swerve.zeroYaw();
-  // }
+  if (xboxC.zero()) {
+    swerve.zeroYaw();
+  }
 
   // arm position buttons
   if (buttonPad.getHomePressed())
