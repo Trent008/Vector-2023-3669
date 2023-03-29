@@ -19,8 +19,8 @@ public:
   int i = 0; // keeps track of the autonomous point index
   int cycles = 0; // keeps track of the number of processer cycles
 
-  Limelight limelight_left{"left"};
-  Limelight limelight_right{"right"};
+  // Limelight limelight_left{"left"};
+  // Limelight limelight_right{"right"};
 
   frc::Joystick driveController{0};
   frc::Joystick armController{1};
@@ -30,7 +30,7 @@ public:
   XKeysPad buttonPad{&pad};
 
   /* -------- arm controller types -------- */
-  SpaceMousePro SMPro{&armController, 20};
+  // SpaceMousePro SMPro{&armController, 20};
   SpaceMouseEnt SMEnt{&armController};
 
 

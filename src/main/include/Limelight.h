@@ -30,11 +30,6 @@ public:
         double z = robot_pose[2];
         return z;
     }
-
-    // not yet implemented
-    bool targetExists() {
-        return false; //table_->GetBoolean();
-    }
     
     // returns the position of the robot on the field
     Vector GetRobotPosition() {
