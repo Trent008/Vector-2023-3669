@@ -41,16 +41,16 @@ struct Parameters
             {p1, armPresets[3][1], true},
             {p1, armPresets[3][1] + drop, true},
             {chargingStation + Pose{{70}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false},
-            {chargingStation - Pose{{8}}, armPresets[0][1], false}
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false},
+            {chargingStation - Pose{{7}}, armPresets[0][1], false}
     };
 } params;
