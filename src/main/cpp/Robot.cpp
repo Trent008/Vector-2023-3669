@@ -34,23 +34,6 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-  // uncomment if using limelights:
-  // if (params.setpoints[i].useLimelight)
-  // {
-  //   if (limelight_left.GetRobotPosition() > 10 && limelight_right.GetRobotPosition() > 10)
-  //   {
-  //     swerve.setPosition((limelight_right.GetRobotPosition() + limelight_left.GetRobotPosition()) / 2);
-  //   }
-  //   if (limelight_left.GetRobotPosition() > 10)
-  //   {
-  //     swerve.setPosition(limelight_left.GetRobotPosition());
-  //   }
-  //   if (limelight_right.GetRobotPosition() > 10)
-  //   {
-  //     swerve.setPosition(limelight_right.GetRobotPosition());
-  //   }
-  // }
-
   // move the swerve drive twards the next setpoint
   swerveTargeting.targetPose(params.setpoints[i].pose, params.setpoints[i].driveRate, params.setpoints[i].rotationRate);
   // set the arm pose
@@ -68,15 +51,11 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
   params.isAutonomous = false;
-  // SMPro.initialize();
 }
 
 void Robot::TeleopPeriodic()
 {
   swerve.Set(xboxC.getFieldVelocity());
-
-  // SMPro.update();
-  
   // switch between cone mode and cube mode
   arm.setCupState(buttonPad.getSuctionCupState());
 
