@@ -4,6 +4,7 @@
 #include <frc/TimedRobot.h>
 #include "cameraserver/CameraServer.h"
 #include "SpaceMouseEnt.h"
+#include "Logitech.h"
 #include "XBOXController.h"
 #include "XKeysPad.h"
 #include "ArmController.h"
@@ -20,6 +21,8 @@ public:
   frc::Joystick driveController{0};
   frc::Joystick armController{1};
   frc::Joystick pad{2};
+  frc::Joystick wristController{3};
+
   /* ------ driving controller types ------ */
   XBOXController xboxC{&driveController};
   XKeysPad buttonPad{&pad};
@@ -27,6 +30,8 @@ public:
   /* -------- arm controller types -------- */
   // SpaceMousePro SMPro{&armController, 20};
   SpaceMouseEnt SMEnt{&armController};
+  Logitech logi{&armController};
+  Logitech logi2{&wristController};
 
 
   /* -------- swerve drive motors -------- */

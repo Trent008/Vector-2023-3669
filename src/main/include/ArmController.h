@@ -75,7 +75,7 @@ public:
         startingJ4Position = angle(startPosition) - 90;
         startingJ1Length = sqrt(356 - 4 * sqrt(7345) * cos(atan2(startPosition.getX(), -startPosition.getY()) + atan(1.5 / 15.5) - atan(3.0 / 11)));
         j4_Max = 90 - startingJ4Position;
-        j4_Min = j4_Max - 180;
+        j4_Min = j4_Max - 200;
     }
 
     void run(bool enabled, Vector velocityTarget = {}, double j3Velocity = 0, double j4Velocity = 0)
@@ -168,13 +168,13 @@ public:
             {
                 j3Setpoint = 0;
             }
-            if (j3Setpoint > 90)
+            if (j3Setpoint > 110)
             {
-                j3Setpoint = 90;
+                j3Setpoint = 110;
             }
-            if (j3Setpoint < -90)
+            if (j3Setpoint < -100)
             {
-                j3Setpoint = -90;
+                j3Setpoint = -110;
             }
 
             /* ------------- integrate toward new j3 position ------------- */

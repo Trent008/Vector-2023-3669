@@ -18,13 +18,13 @@ public:
     double getX()
     {
         a = joy->GetRawAxis(0);
-        return .5 * (std::abs(a) > 0.5 ? a : 0);
+        return .5 * (std::abs(a) > 0.03 ? a : 0);
     }
 
     double getY()
     {
         a = joy->GetRawAxis(1);
-        return -0.5 * (std::abs(a) > 0.5 ? a : 0);
+        return 0.5 * (std::abs(a) > 0.03 ? a : 0);
     }
 
     double getZ()
@@ -35,19 +35,19 @@ public:
 
     double getXR()
     {
-        a = joy->GetRawAxis(3);
+        a = -joy->GetRawAxis(3);
         return 2 * (std::abs(a) > 0.03 ? a : 0);
     }
 
     double getYR()
     {
-        a = -joy->GetRawAxis(4);
+        a = joy->GetRawAxis(4);
         return 1.5 * (std::abs(a) > 0.5 ? a : 0);
     }
 
     double getZR()
     {
         a = joy->GetRawAxis(5);
-        return 2 * (std::abs(a) > 0.5 ? a : 0);
+        return 2 * (std::abs(a) > 0.8 ? a : 0);
     }
 };

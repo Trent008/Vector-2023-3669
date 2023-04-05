@@ -114,7 +114,7 @@ void Robot::TeleopPeriodic()
   }
   
   arm.setCupState(buttonPad.getSuctionCupState());
-  arm.run(true, Vector{SMEnt.getY(), SMEnt.getZ()}, SMEnt.getYR(), SMEnt.getXR());
+  arm.run(true, Vector{SMEnt.getY(), SMEnt.getZ()}, SMEnt.getYR(), SMEnt.getXR()); //logi.getY(), logi.getZ()}, -4*logi2.getY(), 4 * logi2.getZ());
   if (as1 == 4 && arm.poseReached(1))
   {
     arm.setPose(armPresets[as2][buttonPad.getIsCone()]);
