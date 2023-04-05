@@ -46,6 +46,18 @@ public:
         position *= obj.getX();
         angle *= obj.getY();
     }
+    
+    void operator*=(double constant)
+    {
+        position *= constant;
+        angle *= constant;
+    }
+
+    void operator/=(double constant)
+    {
+        position /= constant;
+        angle /= constant;
+    }
 
     Pose operator*(Vector obj)
     {
@@ -53,6 +65,19 @@ public:
         res.position = position * obj.getX();
         res.angle = angle * obj.getY();
         return res;
+    }
+    
+    Pose operator/(double constant)
+    {
+        Pose res;
+        res.position = position / constant;
+        res.angle = angle / constant;
+        return res;
+    }
+
+    bool operator<(double constant)
+    {
+        return abs(position) + std::abs(angle) < constant;
     }
 
     void limit(Vector obj)
@@ -77,21 +102,21 @@ public:
         return angle;
     }
 
-    void moveToward(Pose target, double positionSpeed, double angleSpeed)
+    void moveToward(Pose target, double rate)
     {
         positionError = target.position - position;
-        if (abs(positionError) > 2 * positionSpeed)
+        if (abs(positionError) > 2 * rate)
         {
-            position += positionError / abs(positionError) * positionSpeed;
+            position += positionError / abs(positionError) * rate;
         }
         else
         {
             position += positionError / 2;
         }
         angleError = getDifference(target.angle, angle);
-        if (std::abs(angleError) > 2 * angleSpeed)
+        if (std::abs(angleError) > 2 * rate)
         {
-            angle += angleError / std::abs(angleError) * angleSpeed;
+            angle += angleError / std::abs(angleError) * rate;
         }
         else
         {

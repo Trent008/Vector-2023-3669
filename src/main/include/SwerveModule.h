@@ -46,10 +46,17 @@ public:
         wheelSpeed = wheelDirection * abs(velocity);
     }
 
-    void Set(Vector velocity)
+    void Set(Vector velocity, bool percentOutputModeOn)
     {
         findSpeedAndAngleError(velocity);
-        driveMotor->Set(wheelSpeed);
+        if (percentOutputModeOn)
+        {
+            driveMotor->Set(wheelSpeed);
+        }
+        else
+        {
+            driveMotor->Set(ControlMode::Velocity, wheelSpeed * 6380 * 2048 / 600);
+        }
         steeringMotor->Set(angleError * (-steeringMotorP) / 180);
         currentPosition = driveMotor->GetSelectedSensorPosition(0);
         wheelPositionChange = Polar(currentPosition - lastPosition, angleWheel);

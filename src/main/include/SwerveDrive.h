@@ -40,24 +40,25 @@ public:
    **/
   void Set(Pose fieldVelocity = {})
   {
-    robotVelocity = mc->getRobotVelocity(fieldVelocity, getRobotAngle(params.isAutonomous ? -90 : -180));
+    
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {
-      moduleTurnVector = module[i]->getTurnVector() * robotVelocity.getAngle();
-      moduleVelocity[i] = robotVelocity.getPosition() + moduleTurnVector;
+      moduleTurnVector = module[i]->getTurnVector() * fieldVelocity.getAngle();
+      moduleVelocity[i] = fieldVelocity.getPosition() + moduleTurnVector;
       if (moduleVelocity[i] > largestVector)
       {
         largestVector = moduleVelocity[i];
       }
     }
-
+    robotVelocity = mc->getRobotVelocity(fieldVelocity / abs(largestVector), getRobotAngle(params.isAutonomous ? -90 : -180));
     averagePositionChange = Vector{}; // reset the average to zero before averaging again
 
     for (int i = 0; i < 4; i++) // loop through the module indexes again
     {
-      moduleVelocity[i] /= abs(largestVector); // scale the vector sizes down to 1
-      module[i]->Set(moduleVelocity[i]);       // drive the modules
+      moduleTurnVector = module[i]->getTurnVector() * robotVelocity.getAngle();
+      moduleVelocity[i] = robotVelocity.getPosition() + moduleTurnVector;
+      module[i]->Set(moduleVelocity[i], robotVelocity < 0.25);       // drive the modules using percent output only when going slow
 
       fieldwheelPositionChange = module[i]->getwheelPositionChange(); // get the wheel velocity
       fieldwheelPositionChange.rotate(getRobotAngle(-90));      // orient the wheel velocity in the robot's direction

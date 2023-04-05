@@ -19,8 +19,7 @@ Pose armPresets[8][2] =
 struct Parameters
 {
     // set ramp
-    double robotAccel = 0.05;     // acceleration rate of the robot speed on the field
-    double robotTurnAccel = 0.03; // acceleration rate of robot steering rate
+    double robotAccel = 0.03;     // acceleration rate of the robot pose on the field
     bool isAutonomous;
 
     Pose drop = {{0, -5}, 0}; //{0, -7}

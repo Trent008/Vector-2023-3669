@@ -13,8 +13,7 @@ class FOC
 private:
     Pose fieldVelocity;             // smoothed/accellerated field velocity
     Vector robotVelocity;           // field-oriented robot velocity
-    double rotationalAccelleration = params.robotTurnAccel; // rate to accelerate the rotation rate input
-    double velocityAccelleration = params.robotAccel;   // rate to accelerate the velocity input
+    double robotAccel = params.robotAccel;   // rate to accelerate the pose rate
 
 public:
     /**
@@ -23,7 +22,7 @@ public:
      * */
     Pose getRobotVelocity(Pose velocitySetpoint, double navXAngle)
     {
-            fieldVelocity.moveToward(velocitySetpoint, velocityAccelleration, rotationalAccelleration);
+            fieldVelocity.moveToward(velocitySetpoint, robotAccel);
             /**------------Field Oriented Control------------**/
             robotVelocity = fieldVelocity.getPosition();
             robotVelocity.rotate(-navXAngle);
