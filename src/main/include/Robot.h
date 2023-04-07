@@ -61,7 +61,7 @@ public:
   FOC motionController{};
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
   SwerveDrive swerve{&motionController, modules};
-  SwervePoseTargeting swerveTargeting{&swerve, 0.03, 0.007};
+  SwervePoseTargeting swerveTargeting{&swerve, 0.023, 0.007};
 
   
   bool isCone = true;

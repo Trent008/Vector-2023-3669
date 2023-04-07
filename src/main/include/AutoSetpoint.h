@@ -8,6 +8,6 @@ struct AutoSetpoint
     Pose armPose = Pose{Vector{-9, 9.75}, 0};
     bool cupState = false;
     bool useLimelight = false;
-    double driveRate = .25;
-    double rotationRate = 0.25;
+    double driveRate = .21;
+    double rotationRate = 0.21;
 };

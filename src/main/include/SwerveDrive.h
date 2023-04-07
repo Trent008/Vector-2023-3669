@@ -65,7 +65,7 @@ public:
       averagePositionChange += fieldwheelPositionChange;              // add the wheel velocity to the total sum
     }
     averagePositionChange /= 4; // find the average position change
-    averagePositionChange *= (1 / 8.41 / 2048 * M_PI * 3.9);
+    averagePositionChange *= (1 / 6.75 / 2048 * M_PI * 3.9);
     if (averagePositionChange < 5) {
       fieldLocation += averagePositionChange; // adds the distance travelled this cycle to the total distance to find the position
     }

@@ -55,7 +55,7 @@ public:
         }
         else
         {
-            driveMotor->Set(ControlMode::Velocity, wheelSpeed * 6380 * 2048 / 600);
+            driveMotor->Set(wheelSpeed);//ControlMode::Velocity, wheelSpeed * 6380 * 2048 / 600);
         }
         steeringMotor->Set(angleError * (-steeringMotorP) / 180);
         currentPosition = driveMotor->GetSelectedSensorPosition(0);

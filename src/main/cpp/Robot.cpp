@@ -12,10 +12,10 @@ void Robot::RobotInit()
     driveMotor2.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
     driveMotor3.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
     driveMotor4.ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 20);
-    driveMotor1.Config_kP(0, 0.2, 20);
-    driveMotor2.Config_kP(0, 0.2, 20);
-    driveMotor3.Config_kP(0, 0.2, 20);
-    driveMotor4.Config_kP(0, 0.2, 20);
+    driveMotor1.Config_kP(0, 0.12, 20);
+    driveMotor2.Config_kP(0, 0.12, 20);
+    driveMotor3.Config_kP(0, 0.12, 20);
+    driveMotor4.Config_kP(0, 0.12, 20);
     // arm PID config
     arm.left_J1.SetP(0.1);
     arm.right_J1.SetP(0.1);
