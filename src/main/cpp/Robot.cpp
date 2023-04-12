@@ -28,7 +28,6 @@ void Robot::RobotPeriodic(){}
 
 void Robot::AutonomousInit()
 {
-  params.isAutonomous = true;
   driveMotor1.SetSelectedSensorPosition(0);
   driveMotor2.SetSelectedSensorPosition(0);
   driveMotor3.SetSelectedSensorPosition(0);
@@ -53,9 +52,7 @@ void Robot::AutonomousPeriodic()
 }
 
 void Robot::TeleopInit()
-{
-  params.isAutonomous = false;
-}
+{}
 
 void Robot::TeleopPeriodic()
 {

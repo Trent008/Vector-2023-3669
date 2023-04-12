@@ -17,10 +17,10 @@ private:
   Pose robotVelocity;
   Vector moduleVelocity[4];                // stores the velocity of all 4 modules
   Vector moduleTurnVector;                 // stores each module's turn-vector value in turn
-  Vector fieldwheelPositionChange;         // stores the encoder position change vector of each wheel in turn
+  Vector wheelPositionChange;         // stores the encoder position change vector of each wheel in turn
   Vector largestVector;                    // fastest module velocity to be limited to 1
   Vector averagePositionChange;            // average module position change
-  Vector fieldLocation = params.startingPose.getPosition(); // field location in inches from the starting point
+  Vector robotDisplacement{}; // field location in inches from the starting point
   AHRS navx{frc::SPI::Port::kMXP};         // NavX V2 object
   double robotAngle;
 public:
@@ -38,54 +38,35 @@ public:
   /**
    * runs the swerve modules using the values from the motion controller
    **/
-  void Set(Pose fieldVelocity = {})
+  void Set(Pose fieldRate = {})
   {
     
     largestVector = Vector{1, 0};
     for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
     {
-      moduleTurnVector = module[i]->getTurnVector() * fieldVelocity.getAngle();
-      moduleVelocity[i] = fieldVelocity.getPosition() + moduleTurnVector;
+      moduleTurnVector = module[i]->getTurnVector() * fieldRate.getAngle().getValue();
+      moduleVelocity[i] = fieldRate.getPosition() + moduleTurnVector;
       if (moduleVelocity[i] > largestVector)
       {
         largestVector = moduleVelocity[i];
       }
     }
-    robotVelocity = mc->getRobotVelocity(fieldVelocity / abs(largestVector), getRobotAngle(params.isAutonomous ? -90 : -180));
+    robotVelocity = mc->getRobotVelocity(fieldRate / abs(largestVector), Angle{navx.GetYaw()} + params.startingPose.getAngle());
     averagePositionChange = Vector{}; // reset the average to zero before averaging again
 
     for (int i = 0; i < 4; i++) // loop through the module indexes again
     {
-      moduleTurnVector = module[i]->getTurnVector() * robotVelocity.getAngle();
+      moduleTurnVector = module[i]->getTurnVector() * robotVelocity.getAngle().getValue();
       moduleVelocity[i] = robotVelocity.getPosition() + moduleTurnVector;
-      module[i]->Set(moduleVelocity[i], robotVelocity < 0.25);       // drive the modules using percent output only when going slow
+      module[i]->Set(moduleVelocity[i]);       // drive the modules using percent output only when going slow
 
-      fieldwheelPositionChange = module[i]->getwheelPositionChange(); // get the wheel velocity
-      fieldwheelPositionChange.rotate(getRobotAngle(-90));      // orient the wheel velocity in the robot's direction
-      averagePositionChange += fieldwheelPositionChange;              // add the wheel velocity to the total sum
+      wheelPositionChange = module[i]->getwheelPositionChange(); // get the wheel velocity
+      wheelPositionChange + Angle{navx.GetYaw()};      // orient the wheel velocity in the robot's direction
+      averagePositionChange += wheelPositionChange;              // add the wheel velocity to the total sum
     }
     averagePositionChange /= 4; // find the average position change
     averagePositionChange *= (1 / 6.75 / 2048 * M_PI * 3.9);
-    if (averagePositionChange < 5) {
-      fieldLocation += averagePositionChange; // adds the distance travelled this cycle to the total distance to find the position
-    }
-  }
-
-  /**
-   * Returns:
-   * NavX2 yaw angle
-   * -180 - 180 degrees
-   * */
-  double getRobotAngle(double offset)
-  {
-    robotAngle = navx.GetYaw() + offset;
-    robotAngle =  (robotAngle > 180) ? robotAngle - 360 : (robotAngle < -180) ? robotAngle + 360 : robotAngle;
-    return robotAngle;
-  }
-
-  void setPosition(Vector position)
-  {
-    fieldLocation = position;
+    robotDisplacement += averagePositionChange; // adds the distance travelled this cycle to the total distance to find the position
   }
 
   void zeroYaw()
@@ -93,13 +74,13 @@ public:
     navx.ZeroYaw();
   }
 
-  Pose getPose()
+  Pose robotPose()
   {
-    return Pose{fieldLocation, getRobotAngle(-90)};
+    return Pose{robotDisplacement, navx.GetYaw()};
   }
 
-  Vector getPosition()
+  Pose getFieldPose()
   {
-    return fieldLocation;
+    return robotPose().getRotated(params.startingPose.getAngle()) + params.startingPose.getPosition();
   }
 };

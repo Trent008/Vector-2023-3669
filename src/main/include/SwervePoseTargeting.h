@@ -12,7 +12,6 @@ private:
     double angleProportional;    // rate at which to approach the current angle
     bool useAcceleration;       // whether or not to accelerate the robot rate
     Pose poseError;              // how fast the robot needs to move to get to its next position setpoint
-    Pose distanceToSetpointPose;
     Pose swerveRate;
     SwerveDrive *swerve;
 
@@ -26,7 +25,7 @@ public:
 
     void targetPose(Pose setpoint, double driveRate, double rotationRate)
     {   
-        poseError = setpoint - swerve->getPose();
+        poseError = setpoint - swerve->getFieldPose();
         swerveRate = poseError * Vector{positionProportional, angleProportional};
         swerveRate.limit(Vector{driveRate, rotationRate});
         swerve->Set(swerveRate);
@@ -34,12 +33,6 @@ public:
 
     bool poseReached(double positionTolerance, double angleTolerance)
     {
-        return (poseError.getPosition() < positionTolerance) && (std::abs(distanceToSetpointPose.getAngle()) <= angleTolerance); //distanceToSetpointPose.getPosition()
+        return (poseError.getPosition() < positionTolerance) && (abs(poseError.getAngle()) < angleTolerance);
     }
-
-    void setCurrentPosition(Vector position) {
-        swerve->setPosition(position);
-    }
-
-
 };

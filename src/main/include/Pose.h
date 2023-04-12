@@ -1,19 +1,17 @@
 #pragma once
 #include "Vector.h"
-#include "AngleOptimization.h"
 
 // object that contains a vector for position, and a double for angle
 class Pose
 {
 private:
     Vector position;
-    double angle;
+    Angle angle;
     Vector positionError;
-    double angleError;
-    AngleOptimizer optimize;
+    Angle angleError;
 
 public:
-    Pose(Vector position = {}, double angle = 0)
+    Pose(Vector position = {}, Angle angle = 0)
     {
         this->position = position;
         this->angle = angle;
@@ -29,7 +27,14 @@ public:
     {
         Pose res;
         res.position = position - obj.position;
-        res.angle = getDifference(angle, obj.angle);
+        res.angle = angle - obj.angle;
+        return res;
+    }
+
+    Pose operator-(Vector const &obj)
+    {
+        Pose res;
+        res.position = position - obj;
         return res;
     }
 
@@ -41,22 +46,29 @@ public:
         return res;
     }
 
+    Pose operator+(Vector const &obj)
+    {
+        Pose res;
+        res.position = position + obj;
+        return res;
+    }
+
     void operator*=(Vector &obj)
     {
         position *= obj.getX();
         angle *= obj.getY();
     }
     
-    void operator*=(double constant)
+    void operator*=(double const &val)
     {
-        position *= constant;
-        angle *= constant;
+        position *= val;
+        angle *= val;
     }
 
-    void operator/=(double constant)
+    void operator/=(double const &val)
     {
-        position /= constant;
-        angle /= constant;
+        position /= val;
+        angle /= val;
     }
 
     Pose operator*(Vector obj)
@@ -77,7 +89,7 @@ public:
 
     bool operator<(double constant)
     {
-        return abs(position) + std::abs(angle) < constant;
+        return abs(position) + abs(angle) < constant;
     }
 
     void limit(Vector obj)
@@ -86,9 +98,9 @@ public:
         {
             position *= obj.getX() / abs(position);
         }
-        if (std::abs(angle) > obj.getY())
+        if (abs(angle) > obj.getY())
         {
-            angle *= obj.getY() / std::abs(angle);
+            angle *= obj.getY() / abs(angle);
         }
     }
 
@@ -97,7 +109,7 @@ public:
         return position;
     }
 
-    double getAngle()
+    Angle getAngle()
     {
         return angle;
     }
@@ -113,10 +125,10 @@ public:
         {
             position += positionError / 2;
         }
-        angleError = getDifference(target.angle, angle);
-        if (std::abs(angleError) > 2 * rate)
+        angleError = target.angle - angle;
+        if (abs(angleError) > 2 * rate)
         {
-            angle += angleError / std::abs(angleError) * rate;
+            angle += angleError / abs(angleError) * rate;
         }
         else
         {
@@ -126,5 +138,21 @@ public:
 
     void setPosition(Vector position) {
         this->position = position;
+    }
+
+    // rotates about the origin by the given angle
+    void rotate(Angle angle)
+    {
+        this->angle += angle;
+        position += angle;
+    }
+
+    // returns this Pose rotated about (0, 0) by the given angle
+    Pose getRotated(Angle angle)
+    {
+        Pose res;
+        res.angle = this->angle + angle;
+        res.position += angle;
+        return res;
     }
 };

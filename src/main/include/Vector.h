@@ -1,6 +1,7 @@
 #pragma once
 #include "cmath"
 #include "math.h"
+#include "Angle.h"
 
 class Vector
 {
@@ -27,6 +28,13 @@ public:
         y = y_new;
     }
 
+    Vector getRotated(double angle)
+    {
+        x_new = x * cos(-angle * M_PI / 180) - y * sin(-angle * M_PI / 180);
+        y_new = x * sin(-angle * M_PI / 180) + y * cos(-angle * M_PI / 180);
+        return Vector{x_new, y_new};
+    }
+
     void operator=(Vector const &obj)
     {
         x = obj.x;
@@ -41,11 +49,27 @@ public:
         return res;
     }
 
+    Vector operator+(Angle obj)
+    {
+        Vector res;
+        res.x = x * cos(-obj.getValue() * M_PI / 180) - y * sin(-obj.getValue() * M_PI / 180);
+        res.y = x * sin(-obj.getValue() * M_PI / 180) + y * cos(-obj.getValue() * M_PI / 180);
+        return res;
+    }
+
     Vector operator-(Vector const &obj)
     {
         Vector res;
         res.x = x - obj.x;
         res.y = y - obj.y;
+        return res;
+    }
+
+    Vector operator-(Angle obj)
+    {
+        Vector res;
+        res.x = x * cos(obj.getValue() * M_PI / 180) - y * sin(obj.getValue() * M_PI / 180);
+        res.y = x * sin(obj.getValue() * M_PI / 180) + y * cos(obj.getValue() * M_PI / 180);
         return res;
     }
 
@@ -83,10 +107,20 @@ public:
         y += obj.y;
     }
 
+    void operator+=(Angle const &obj)
+    {
+        *this = *this + obj;
+    }
+
     void operator-=(Vector const &obj)
     {
         x -= obj.x;
         y -= obj.y;
+    }
+
+    void operator=(Angle const &obj)
+    {
+        *this = *this - obj;
     }
 
     bool operator>(Vector const &obj)
@@ -129,13 +163,7 @@ double abs(Vector obj)
     return hypot(obj.getX(), obj.getY());
 }
 
-double angle(Vector &obj)
+Angle angle(Vector &obj)
 {
-    return atan2(obj.getX(), obj.getY()) * 180 / M_PI;
-}
-
-// creates a new vector using polar coordinates
-Vector Polar(double magnitude, double angle)
-{
-    return Vector{magnitude * sin(angle * M_PI / 180), magnitude * cos(angle * M_PI / 180)};
+    return Angle{atan2(obj.getX(), obj.getY()) * 180 / M_PI};
 }

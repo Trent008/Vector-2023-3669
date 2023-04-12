@@ -20,15 +20,12 @@ struct Parameters
 {
     // set ramp
     double robotAccel = 0.04;     // acceleration rate of the robot pose on the field
-    bool isAutonomous;
 
-    Pose drop = {{0, -5}, 0}; //{0, -7}
+    Pose drop = {{0, -5}, 0};
 
     // swerve presets
-    Pose p1 = {{75, 96}, -90}; //{75, 18.5};
-    Pose offset = {{20}, 0};
-    Pose chargingStation = {{152, 96}, -90};
-    Pose startingPose = p1;
+    Pose chargingStation = {{0, 77}, 180};
+    Pose startingPose = {{0, 0}, 180};
 
     /*
      * the pose, armPosition, wrist, suction, useLimelight, driveRate, rotationRate
@@ -36,20 +33,20 @@ struct Parameters
      */
     AutoSetpoint setpoints[15] =
         {
-            {p1, armPresets[7][1] + Pose{{0, 0}, 80}, true},
-            {p1, armPresets[3][1], true},
-            {p1, armPresets[3][1] + drop, true},
+            {startingPose, armPresets[7][1] + Pose{{0, 0}, 80}, true},
+            {startingPose, armPresets[3][1], true},
+            {startingPose, armPresets[3][1] + drop, true},
             {chargingStation + Pose{{92}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false},
-            {chargingStation - Pose{{5}}, armPresets[0][1], false}
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false},
+            {chargingStation - Pose{{3}}, armPresets[0][1], false}
     };
 } params;
