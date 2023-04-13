@@ -8,11 +8,10 @@ class SwerveModule
 {
 private:
     Vector turnVector;         // vector corresponding to the way the rotation rate adds to the swerve module velocity
-    double wheelDirection = 0; // direction of the wheel depending on whether the wheel is drivinging forward or backward
-    double wheelSpeed = 0;
+    double wheelDirection; // direction of the wheel depending on whether the wheel is drivinging forward or backward
+    double wheelSpeed;
     Angle error = 0;
     double steeringMotorP; // proportional value determines how quickly the steering responds to angle setpoints
-    Angle angleWheel, angleSetpoint;
     double lastPosition = 0;
     double currentPosition;
     WPI_TalonFX *driveMotor;
@@ -25,7 +24,7 @@ public:
      * parameters posX and posY set the position of
      * the module relative to the center of the robot
      */
-    SwerveModule(WPI_TalonFX *driveMotor, rev::CANSparkMax *steeringMotor, CANCoder *wheelEncoder, Vector position)
+    SwerveModule(WPI_TalonFX *driveMotor, rev::CANSparkMax *steeringMotor, CANCoder *wheelEncoder, Vector position = {})
     {
         steeringMotorP = 1;
         this->driveMotor = driveMotor;
@@ -39,7 +38,6 @@ public:
     // returns the angle the wheel needs to turn to
     void findSpeedAndAngleError(Vector velocity)
     {
-        
         error = angle(velocity) - wheelEncoder->GetAbsolutePosition();
         if (abs(error) < 90) {
             wheelDirection = 1;
@@ -52,6 +50,11 @@ public:
         wheelSpeed = wheelDirection * abs(velocity);
     }
 
+    Vector getVector(Pose robotRate)
+    {
+        return robotRate.getPosition() + (turnVector * robotRate.getAngle().getValue());
+    }
+
     void Set(Vector velocity)
     {
         findSpeedAndAngleError(velocity);
@@ -62,11 +65,6 @@ public:
         lastPosition = currentPosition;
     }
 
-    Vector getTurnVector()
-    {
-        return turnVector;
-    }
-
     double getWheelSpeed()
     {
         return wheelSpeed;
@@ -75,5 +73,16 @@ public:
     Vector getwheelPositionChange()
     {
         return wheelPositionChange;
+    }
+
+    void operator=(SwerveModule const &obj)
+    {
+        turnVector = obj.turnVector;
+        lastPosition = obj.lastPosition;
+        currentPosition = obj.currentPosition;
+        driveMotor = obj.driveMotor;
+        steeringMotor = obj.steeringMotor;
+        wheelEncoder = obj.wheelEncoder;
+        wheelPositionChange = obj.wheelPositionChange;
     }
 };

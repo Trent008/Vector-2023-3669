@@ -53,6 +53,23 @@ public:
         return res;
     }
 
+    Pose operator*(Vector obj)
+    {
+        Pose res;
+        res.position = position * obj.getX();
+        res.angle = angle * obj.getY();
+        return res;
+    }
+    
+
+    Pose operator/(double constant)
+    {
+        Pose res;
+        res.position = position / constant;
+        res.angle = angle / constant;
+        return res;
+    }
+
     void operator*=(Vector &obj)
     {
         position *= obj.getX();
@@ -69,27 +86,6 @@ public:
     {
         position /= val;
         angle /= val;
-    }
-
-    Pose operator*(Vector obj)
-    {
-        Pose res;
-        res.position = position * obj.getX();
-        res.angle = angle * obj.getY();
-        return res;
-    }
-    
-    Pose operator/(double constant)
-    {
-        Pose res;
-        res.position = position / constant;
-        res.angle = angle / constant;
-        return res;
-    }
-
-    bool operator<(double constant)
-    {
-        return abs(position) + abs(angle) < constant;
     }
 
     void limit(Vector obj)
@@ -117,7 +113,7 @@ public:
     void moveToward(Pose target, double rate)
     {
         positionError = target.position - position;
-        if (abs(positionError) > 2 * rate)
+        if (positionError > 2 * rate)
         {
             position += positionError / abs(positionError) * rate;
         }
@@ -126,7 +122,7 @@ public:
             position += positionError / 2;
         }
         angleError = target.angle - angle;
-        if (abs(angleError) > 2 * rate)
+        if (angleError > 2 * rate)
         {
             angle += angleError / abs(angleError) * rate;
         }
@@ -136,23 +132,22 @@ public:
         }
     }
 
+    bool operator<(double constant)
+    {
+        return abs(position) + abs(angle) < constant;
+    }
+
+    Pose getRotatedCCW(Angle const &obj)
+    {
+        return Pose{position - obj, angle};
+    }
+
+    Pose getRotatedCW(Angle const &obj)
+    {
+        return Pose{position + obj, angle};
+    }
+
     void setPosition(Vector position) {
         this->position = position;
-    }
-
-    // rotates about the origin by the given angle
-    void rotate(Angle angle)
-    {
-        this->angle += angle;
-        position += angle;
-    }
-
-    // returns this Pose rotated about (0, 0) by the given angle
-    Pose getRotated(Angle angle)
-    {
-        Pose res;
-        res.angle = this->angle + angle;
-        res.position += angle;
-        return res;
     }
 };

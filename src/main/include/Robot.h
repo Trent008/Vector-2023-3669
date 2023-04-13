@@ -49,18 +49,18 @@ public:
   rev::CANSparkMax steeringMotor2{32, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax steeringMotor3{33, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax steeringMotor4{34, rev::CANSparkMax::MotorType::kBrushless};
-  /* -------- swerve module objects -------- */
-  SwerveModule *m1 = new SwerveModule{&driveMotor1, &steeringMotor1, &encoder1, {-.7, 1}};
-  SwerveModule *m2 = new SwerveModule{&driveMotor2, &steeringMotor2, &encoder2, {-.7, -1}};
-  SwerveModule *m3 = new SwerveModule{&driveMotor3, &steeringMotor3, &encoder3, {.7, 1}};
-  SwerveModule *m4 = new SwerveModule{&driveMotor4, &steeringMotor4, &encoder4, {.7, -1}};
-  // swerve module array:
-  SwerveModule *modules[4] = {m1, m2, m3, m4};
 
-  // field oriented motion control and motion smoothing class:
-  FOC motionController{};
+  // swerve module array:
+  SwerveModule moduleArray[4] =
+  {
+    {&driveMotor1, &steeringMotor1, &encoder1, {-17.75, 25}},
+    {&driveMotor2, &steeringMotor2, &encoder2, {-17.75, -25}},
+    {&driveMotor3, &steeringMotor3, &encoder3, {17.75, 25}},
+    {&driveMotor4, &steeringMotor4, &encoder4, {17.75, -25}}
+  };
+
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
-  SwerveDrive swerve{&motionController, modules};
+  SwerveDrive swerve;
   SwervePoseTargeting swerveTargeting{&swerve, 0.023, 0.007};
 
   

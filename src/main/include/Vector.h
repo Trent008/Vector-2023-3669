@@ -19,22 +19,6 @@ public:
         this->y = y;
     }
 
-    // Method to rotate the vector by a given angle
-    void rotate(double angle)
-    {
-        x_new = x * cos(-angle * M_PI / 180) - y * sin(-angle * M_PI / 180);
-        y_new = x * sin(-angle * M_PI / 180) + y * cos(-angle * M_PI / 180);
-        x = x_new;
-        y = y_new;
-    }
-
-    Vector getRotated(double angle)
-    {
-        x_new = x * cos(-angle * M_PI / 180) - y * sin(-angle * M_PI / 180);
-        y_new = x * sin(-angle * M_PI / 180) + y * cos(-angle * M_PI / 180);
-        return Vector{x_new, y_new};
-    }
-
     void operator=(Vector const &obj)
     {
         x = obj.x;
@@ -116,6 +100,11 @@ public:
     {
         x -= obj.x;
         y -= obj.y;
+    }
+
+    void operator-=(Angle const &obj)
+    {
+        *this = *this - obj;
     }
 
     void operator=(Angle const &obj)

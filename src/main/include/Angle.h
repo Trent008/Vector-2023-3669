@@ -28,9 +28,7 @@ public:
         Angle res;
         res.angle = angle + obj.angle;
         res.angle = fmod(res.angle, 360);
-        if (std::abs(res.angle) > 180) {
-            res.angle += std::signbit(res.angle) ? 360: -360;
-        }
+        res.angle += res.angle > 180 ? -360 : res.angle < -180 ? 360 : 0;
         return res;
     }
 
@@ -38,9 +36,7 @@ public:
         Angle res;
         res.angle = angle - obj.angle;
         res.angle = fmod(res.angle, 360);
-        if (std::abs(res.angle) > 180) {
-            res.angle += std::signbit(res.angle) ? 360: -360;
-        }
+        res.angle += res.angle > 180 ? -360 : res.angle < -180 ? 360 : 0;
         return res;
     }
 

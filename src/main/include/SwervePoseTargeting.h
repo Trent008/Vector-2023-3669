@@ -23,12 +23,12 @@ public:
         this->swerve = swerve;
     }
 
-    void targetPose(Pose setpoint, double driveRate, double rotationRate)
+    void targetPose(SwerveModule moduleArray[4], Pose setpoint, double driveRate, double rotationRate)
     {   
         poseError = setpoint - swerve->getFieldPose();
         swerveRate = poseError * Vector{positionProportional, angleProportional};
         swerveRate.limit(Vector{driveRate, rotationRate});
-        swerve->Set(swerveRate);
+        swerve->Set(moduleArray, swerveRate);
     }
 
     bool poseReached(double positionTolerance, double angleTolerance)
