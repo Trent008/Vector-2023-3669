@@ -26,13 +26,14 @@ public:
     void targetPose(SwerveModule moduleArray[4], Pose setpoint, double driveRate, double rotationRate)
     {   
         poseError = setpoint - swerve->getFieldPose();
-        swerveRate = poseError * Vector{positionProportional, angleProportional};
+        swerveRate = poseError;
+        swerveRate *= Vector{positionProportional, angleProportional};
         swerveRate.limit(Vector{driveRate, rotationRate});
         swerve->Set(moduleArray, swerveRate);
     }
 
     bool poseReached(double positionTolerance, double angleTolerance)
     {
-        return (poseError.getPosition() < positionTolerance) && (abs(poseError.getAngle()) < angleTolerance);
+        return (poseError.getVector().magnitude() < positionTolerance) && (poseError.getAngle().magnitude() < angleTolerance);
     }
 };

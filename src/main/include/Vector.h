@@ -3,86 +3,21 @@
 #include "math.h"
 #include "Angle.h"
 
-class Vector
+class Vector: protected Angle
 {
 private:
     double x, y, x_new, y_new;
 
 public:
-    /**
-     * vector.x = x
-     * vector.y = y
-     **/
     Vector(double x = 0, double y = 0)
     {
         this->x = x;
         this->y = y;
     }
 
-    void operator=(Vector const &obj)
-    {
-        x = obj.x;
-        y = obj.y;
-    }
-
     Vector operator+(Vector const &obj)
     {
-        Vector res;
-        res.x = x + obj.x;
-        res.y = y + obj.y;
-        return res;
-    }
-
-    Vector operator+(Angle obj)
-    {
-        Vector res;
-        res.x = x * cos(-obj.getValue() * M_PI / 180) - y * sin(-obj.getValue() * M_PI / 180);
-        res.y = x * sin(-obj.getValue() * M_PI / 180) + y * cos(-obj.getValue() * M_PI / 180);
-        return res;
-    }
-
-    Vector operator-(Vector const &obj)
-    {
-        Vector res;
-        res.x = x - obj.x;
-        res.y = y - obj.y;
-        return res;
-    }
-
-    Vector operator-(Angle obj)
-    {
-        Vector res;
-        res.x = x * cos(obj.getValue() * M_PI / 180) - y * sin(obj.getValue() * M_PI / 180);
-        res.y = x * sin(obj.getValue() * M_PI / 180) + y * cos(obj.getValue() * M_PI / 180);
-        return res;
-    }
-
-    Vector operator*(double const &val)
-    {
-        Vector res;
-        res.x = x * val;
-        res.y = y * val;
-        return res;
-    }
-
-    Vector operator/(double const &val)
-    {
-        Vector res;
-        res.x = x / val;
-        res.y = y / val;
-        return res;
-    }
-
-    void operator*=(double const &val)
-    {
-        x *= val;
-        y *= val;
-    }
-
-    void operator/=(double const &val)
-    {
-        x /= val;
-        y /= val;
+        return Vector{x + obj.x, y + obj.y};
     }
 
     void operator+=(Vector const &obj)
@@ -91,9 +26,9 @@ public:
         y += obj.y;
     }
 
-    void operator+=(Angle const &obj)
+    Vector operator-(Vector const &obj)
     {
-        *this = *this + obj;
+        return Vector{x - obj.x, y - obj.y};
     }
 
     void operator-=(Vector const &obj)
@@ -102,39 +37,45 @@ public:
         y -= obj.y;
     }
 
-    void operator-=(Angle const &obj)
+    Vector operator*(double const &value)
     {
-        *this = *this - obj;
+        return Vector{x*value, y*value};
     }
 
-    void operator=(Angle const &obj)
+    Vector operator*(Angle &value)
     {
-        *this = *this - obj;
+        return Vector{x*value.get(), y*value.get()};
     }
 
-    bool operator>(Vector const &obj)
+    void operator*=(double const &value)
     {
-        return hypot(x, y) > hypot(obj.x, obj.y);
+        x *= value;
+        y *= value;
     }
 
-    bool operator>(double const &val)
+    Vector operator/(double value)
     {
-        return hypot(x, y) > val;
+        return Vector{x/value, y/value};
     }
 
-    bool operator<(Vector const &obj)
+    void operator/=(double value)
     {
-        return hypot(x, y) < hypot(obj.x, obj.y);
+        x /= value;
+        y /= value;
     }
 
-    bool operator<(double const &val)
+    double magnitude()
     {
-        return hypot(x, y) < val;
+        return std::hypot(x, y);
     }
 
-    double getX() { return x; }
+    double getX() {
+        return x;
+    }
 
-    double getY() { return y; }
+    double getY() {
+        return y;
+    }
 
     void setX(double x)
     {
@@ -145,14 +86,44 @@ public:
     {
         this->y = y;
     }
+    
+    void moveToward(Vector target, double rate)
+    {
+        target -= *this;
+        if (target.magnitude() > 2 * rate)
+        {
+            *this += target / target.magnitude() * rate;
+        }
+        else
+        {
+            *this += target / 2;
+        }
+    }
+
+    double getAngle()
+    {
+        return atan2(x, y) * 180 / M_PI;
+    }
+
+    void rotateCW(double angle)
+    {
+        *this = this->getRotatedCW(angle);
+    }
+
+    Vector getRotatedCW(double angle)
+    {
+        angle *= M_PI / 180;
+        return Vector{x*cos(angle) + y*sin(angle), y*cos(angle) - x*sin(angle)};
+    }
+
+    void rotateCCW(double angle)
+    {
+        *this = this->getRotatedCCW(angle);
+    }
+
+    Vector getRotatedCCW(double angle)
+    {
+        angle *= M_PI / 180;
+        return Vector{x*cos(angle) - y*sin(angle), y*cos(angle) + x*sin(angle)};
+    }
 };
-
-double abs(Vector obj)
-{
-    return hypot(obj.getX(), obj.getY());
-}
-
-Angle angle(Vector &obj)
-{
-    return Angle{atan2(obj.getX(), obj.getY()) * 180 / M_PI};
-}

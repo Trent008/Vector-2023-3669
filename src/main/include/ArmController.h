@@ -72,7 +72,7 @@ public:
     {
         currentPosition = startPosition;
         targetPosition = startPosition;
-        startingJ4Position = angle(startPosition).getValue() - 90;
+        startingJ4Position = startPosition.getAngle() - 90;
         startingJ1Length = sqrt(356 - 4 * sqrt(7345) * cos(atan2(startPosition.getX(), -startPosition.getY()) + atan(1.5 / 15.5) - atan(3.0 / 11)));
         j4_Max = 90 - startingJ4Position;
         j4_Min = j4_Max - 200;
@@ -107,14 +107,7 @@ public:
 
         if (enabled) {
             /* -- moves the currentPosition toward the target currentPosition -- */
-            if (error > 2 * positionRate)
-            {
-                currentPosition += error * positionRate / abs(error);
-            }
-            else
-            {
-                currentPosition += error * 0.5;
-            }
+            currentPosition.moveToward(targetPosition, positionRate);
 
             /* ------------- limits the current position ------------- */
             if ((currentPosition.getY() < deck) && (currentPosition.getY() > floor) && (currentPosition.getX() < frame))
@@ -139,7 +132,7 @@ public:
 
             /* ------------- set j4 position ------------- */
             j4UserSetpoint += j4Velocity;
-            j4Setpoint = angle(currentPosition).getValue() - 90 - startingJ4Position + j4UserSetpoint;
+            j4Setpoint = currentPosition.getAngle() - 90 - startingJ4Position + j4UserSetpoint;
             if (j4Setpoint > j4_Max)
             {
                 j4UserSetpoint -= j4Setpoint - j4_Max;
@@ -209,7 +202,7 @@ public:
 
     double GetJ2()
     {
-        j2Length = abs(currentPosition) - abs(startPosition);
+        j2Length = currentPosition.magnitude() - startPosition.magnitude();
         j2Length = (j2Length > j2_Max) ? j2_Max : (j2Length < j2_Min) ? j2_Min
                                                                       : j2Length;
         return j2Length * (5 * 25.4 / 18);
@@ -235,13 +228,13 @@ public:
 
     void setPose(Pose armPose)
     {
-        targetPosition = origin + armPose.getPosition();
-        j4UserSetpoint = armPose.getAngle().getValue();
+        targetPosition = origin + armPose.getVector();
+        j4UserSetpoint = armPose.getAngle().get();
         j3Setpoint = 0;
     }
 
     bool poseReached(double tolerance)
     {
-        return error < tolerance && j4Error < tolerance;
+        return error.magnitude() < tolerance && j4Error < tolerance;
     }
 };

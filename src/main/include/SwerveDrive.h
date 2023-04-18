@@ -29,9 +29,9 @@ public:
     /**
      * runs the swerve modules using the values from the motion controller
      **/
-    void Set(SwerveModule modules[4], Pose driveRate = {})
+    void Set(SwerveModule modules[4], Pose driveRate)
     {
-        navXAngle = navx.GetYaw();
+        navXAngle = Angle{navx.GetYaw()};
         fieldAngle = navXAngle + params.startingPose.getAngle();
 
         robotRate = driveRate.getRotatedCCW(fieldAngle); // robot orient the drive rate
@@ -40,12 +40,12 @@ public:
         for (int i = 0; i < 4; i++) // compare all of the module velocities to find the largest
         {
             moduleVelocity = modules[i].getVector(robotRate);
-            if (moduleVelocity > largestVector)
+            if (moduleVelocity.magnitude() > largestVector.magnitude())
             {
                 largestVector = moduleVelocity;
             }
         }
-        driveRate /= abs(largestVector);                    // limit the rates to never max out modules
+        driveRate /= largestVector.magnitude();                    // limit the rates to never max out modules
         fieldRate.moveToward(driveRate, params.robotAccel); // accelerate toward the drive rate target
         robotRate = fieldRate.getRotatedCCW(fieldAngle);    // robot orient the drive rate
 
@@ -53,10 +53,10 @@ public:
         for (int i = 0; i < 4; i++)       // loop through the module indexes again
         {
             modules[i].Set(modules[i].getVector(robotRate));                          // set each module to the accelerated robot velocity
-            averagePositionChange += modules[i].getwheelPositionChange() + navXAngle; // add the wheel velocity to the total sum
+            averagePositionChange += modules[i].getwheelPositionChange().getRotatedCW(navXAngle.get()); // add the wheel velocity to the total sum
         }
         averagePositionChange /= 4; // find the average position change
-        averagePositionChange *= (1 / 6.75 / 2048 * M_PI * 3.9);
+        averagePositionChange *= 1 / 6.75 / 2048 * M_PI * 3.9;
         robotDisplacement += averagePositionChange; // adds the distance traveled this cycle to the total distance to find the position
     }
 
@@ -67,6 +67,6 @@ public:
 
     Pose getFieldPose()
     {
-        return Pose{robotDisplacement + params.startingPose.getAngle(), fieldAngle};
+        return Pose{robotDisplacement.getRotatedCW(params.startingPose.getAngle().get()), fieldAngle};
     }
 };

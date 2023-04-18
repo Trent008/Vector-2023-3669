@@ -1,108 +1,70 @@
 #pragma once
 #include "Vector.h"
+#include "Angle.h"
 
-// object that contains a vector for position, and a double for angle
 class Pose
 {
-private:
-    Vector position;
+protected:
+    Vector vector;
     Angle angle;
-    Vector positionError;
-    Angle angleError;
-
 public:
-    Pose(Vector position = {}, Angle angle = 0)
+    Pose(Vector vector = Vector{}, Angle angle = Angle{})
     {
-        this->position = position;
+        this->vector = vector;
         this->angle = angle;
     }
 
-    void operator=(Pose const &obj)
+    void operator+=(Pose obj)
     {
-        position = obj.position;
-        angle = obj.angle;
+        vector += obj.vector;
+        angle += obj.angle;
     }
 
-    Pose operator-(Pose const &obj)
+    Pose operator+(Pose obj)
     {
         Pose res;
-        res.position = position - obj.position;
-        res.angle = angle - obj.angle;
+        res += obj;
         return res;
     }
 
-    Pose operator-(Vector const &obj)
+    void operator-=(Pose pose)
+    {
+        vector -= pose.vector;
+        angle -= pose.angle;
+    }
+
+    Pose operator-(Pose obj)
     {
         Pose res;
-        res.position = position - obj;
+        res -= obj;
         return res;
     }
 
-    Pose operator+(Pose const &obj)
+    void operator*=(Vector obj)
     {
-        Pose res;
-        res.position = position + obj.position;
-        res.angle = angle + obj.angle;
-        return res;
+        this->vector *= vector.getX();
+        this->angle *= vector.getY();
     }
 
-    Pose operator+(Vector const &obj)
+    void operator/=(double divisor)
     {
-        Pose res;
-        res.position = position + obj;
-        return res;
+        vector /= divisor;
+        angle /= divisor;
     }
 
-    Pose operator*(Vector obj)
-    {
-        Pose res;
-        res.position = position * obj.getX();
-        res.angle = angle * obj.getY();
-        return res;
-    }
-    
-
-    Pose operator/(double constant)
-    {
-        Pose res;
-        res.position = position / constant;
-        res.angle = angle / constant;
-        return res;
+    void moveToward(Pose pose, double rate) {
+        vector.moveToward(pose.vector, rate);
+        angle.moveToward(pose.angle, rate);
     }
 
-    void operator*=(Vector &obj)
+    double magnitude()
     {
-        position *= obj.getX();
-        angle *= obj.getY();
-    }
-    
-    void operator*=(double const &val)
-    {
-        position *= val;
-        angle *= val;
+        return vector.magnitude() + angle.magnitude();
     }
 
-    void operator/=(double const &val)
+    Vector getVector()
     {
-        position /= val;
-        angle /= val;
-    }
-
-    void limit(Vector obj)
-    {
-        if (abs(position) > obj.getX())
-        {
-            position *= obj.getX() / abs(position);
-        }
-        if (abs(angle) > obj.getY())
-        {
-            angle *= obj.getY() / abs(angle);
-        }
-    }
-
-    Vector getPosition()
-    {
-        return position;
+        return vector;
     }
 
     Angle getAngle()
@@ -110,44 +72,35 @@ public:
         return angle;
     }
 
-    void moveToward(Pose target, double rate)
+    void limit(Vector lim)
     {
-        positionError = target.position - position;
-        if (positionError > 2 * rate)
+        if (vector.magnitude() > lim.getX())
         {
-            position += positionError / abs(positionError) * rate;
+            vector *= lim.getX() / vector.magnitude();
         }
-        else
+        if (angle.magnitude() > lim.getY())
         {
-            position += positionError / 2;
-        }
-        angleError = target.angle - angle;
-        if (angleError > 2 * rate)
-        {
-            angle += angleError / abs(angleError) * rate;
-        }
-        else
-        {
-            angle += angleError / 2;
+            angle *= lim.getY() / angle.magnitude();
         }
     }
 
-    bool operator<(double constant)
+    void rotateVectorCW(double angle)
     {
-        return abs(position) + abs(angle) < constant;
+        vector.rotateCW(angle);
     }
 
-    Pose getRotatedCCW(Angle const &obj)
+    void rotateVectorCCW(double angle)
     {
-        return Pose{position - obj, angle};
+        vector.rotateCCW(angle);
     }
 
-    Pose getRotatedCW(Angle const &obj)
+    Pose getRotatedCW(Angle angle)
     {
-        return Pose{position + obj, angle};
+        return Pose{vector.getRotatedCW(angle.get()), this->angle};
     }
 
-    void setPosition(Vector position) {
-        this->position = position;
+    Pose getRotatedCCW(Angle angle)
+    {
+        return Pose{vector.getRotatedCCW(angle.get()), this->angle};
     }
 };

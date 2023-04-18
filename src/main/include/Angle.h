@@ -1,106 +1,94 @@
 #pragma once
+#include "cmath"
 #include "math.h"
-#include <cmath>
 
 class Angle
 {
-private:
-    double angle;
+protected:
+    double a;
 
 public:
     Angle(double angle = 0)
     {
-        this->angle = angle;
+        a = angle;
     }
 
-    void operator=(Angle const &obj)
+    operator double() const
     {
-        angle = obj.angle;
-    }
-
-    void operator=(double val)
-    {
-        angle = val;
+        return a;
     }
 
     Angle operator+(Angle const &obj)
     {
         Angle res;
-        res.angle = angle + obj.angle;
-        res.angle = fmod(res.angle, 360);
-        res.angle += res.angle > 180 ? -360 : res.angle < -180 ? 360 : 0;
-        return res;
-    }
-
-    Angle operator-(Angle const &obj) {
-        Angle res;
-        res.angle = angle - obj.angle;
-        res.angle = fmod(res.angle, 360);
-        res.angle += res.angle > 180 ? -360 : res.angle < -180 ? 360 : 0;
+        res.a = a + obj.a;
+        res.a += res.a > 180 ? -360 : res.a < -180 ? 360
+                                       : 0;
         return res;
     }
 
     void operator+=(Angle const &obj)
     {
-        *this = *this + obj;
+        a += obj.a;
+        a += a > 180 ? -360 : a < -180 ? 360
+                                       : 0;
     }
 
-    void operator-=(Angle const &obj)
+    Angle operator-(Angle const &obj)
     {
-        *this = *this - obj;
+        Angle res;
+        res.a = a - obj.a;
+        res.a += res.a > 180 ? -360 : res.a < -180 ? 360
+                                       : 0;
+        return res;
+    }
+
+    Angle operator-=(Angle const &obj)
+    {
+        a -= obj.a;
+        a += a > 180 ? -360 : a < -180 ? 360
+                                       : 0;
     }
 
     Angle operator*(Angle const &obj)
     {
-        Angle res;
-        res.angle = angle * obj.angle;
-        return res;
+        return Angle{a * obj.a};
     }
 
-    Angle operator/(Angle const &obj)
+    void operator*=(double const &value)
     {
-        Angle res;
-        res.angle = angle / obj.angle;
-        return res;
+        a *= value;
     }
 
-    void operator*=(double const &val)
+    void operator/=(double const &value)
     {
-        angle *= val;
+        a /= value;
     }
 
-    void operator/=(double const &val)
+    double magnitude()
     {
-        angle /= val;
+        return std::abs(a);
     }
 
-    bool operator>(Angle const &obj)
+    void moveToward(Angle target, double rate)
     {
-        return std::abs(angle) > std::abs(obj.angle);
+        target.subtract(*this);
+        if (target.magnitude() > 2 * rate)
+        {
+            target.divide(target.magnitude());
+            target.scale(rate);
+            this->add(target);
+        }
+        else
+        {
+            target.divide(2);
+            this->add(target);
+        }
     }
 
-    bool operator>(double const &val)
+    // returns the angle's value
+    double get()
     {
-        return std::abs(angle) > val;
-    }
-
-    bool operator<(Angle const &obj)
-    {
-        return std::abs(angle) < std::abs(obj.angle);
-    }
-
-    bool operator<(double const &val)
-    {
-        return std::abs(angle) < val;
-    }
-
-    double getValue()
-    {
-        return angle;
+        return a;
     }
 };
-
-double abs(Angle obj)
-{
-    return std::abs(obj.getValue());
-}
