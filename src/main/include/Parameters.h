@@ -25,7 +25,9 @@ struct Parameters
 
     // swerve presets
     Pose chargingStation = {{0, 77}, 180};
-    Pose startingPose = {{0, 0}, 0};
+    Vector startingPosition = {0, 0};
+    Angle startingAngle = 0;
+    Pose startingPose = {startingPosition, startingAngle};
 
     /*
      * the pose, armPosition, wrist, suction, useLimelight, driveRate, rotationRate

@@ -1,9 +1,10 @@
 #pragma once
-#include "Pose.h"
+#include "utilities.h"
 #include "rev/CANSparkMax.h"
 #include "ctre/phoenix.h"
 #include "frc/Solenoid.h"
 #include "frc/DigitalInput.h"
+using namespace math;
 
 
 class ArmController
@@ -72,7 +73,7 @@ public:
     {
         currentPosition = startPosition;
         targetPosition = startPosition;
-        startingJ4Position = startPosition.getAngle() - 90;
+        startingJ4Position = double(startPosition.getAngle()) - 90;
         startingJ1Length = sqrt(356 - 4 * sqrt(7345) * cos(atan2(startPosition.getX(), -startPosition.getY()) + atan(1.5 / 15.5) - atan(3.0 / 11)));
         j4_Max = 90 - startingJ4Position;
         j4_Min = j4_Max - 200;
@@ -132,7 +133,7 @@ public:
 
             /* ------------- set j4 position ------------- */
             j4UserSetpoint += j4Velocity;
-            j4Setpoint = currentPosition.getAngle() - 90 - startingJ4Position + j4UserSetpoint;
+            j4Setpoint = double(currentPosition.getAngle()) - 90 - startingJ4Position + j4UserSetpoint;
             if (j4Setpoint > j4_Max)
             {
                 j4UserSetpoint -= j4Setpoint - j4_Max;
@@ -202,7 +203,7 @@ public:
 
     double GetJ2()
     {
-        j2Length = currentPosition.magnitude() - startPosition.magnitude();
+        j2Length = abs(currentPosition) - abs(startPosition);
         j2Length = (j2Length > j2_Max) ? j2_Max : (j2Length < j2_Min) ? j2_Min
                                                                       : j2Length;
         return j2Length * (5 * 25.4 / 18);
@@ -229,12 +230,12 @@ public:
     void setPose(Pose armPose)
     {
         targetPosition = origin + armPose.getVector();
-        j4UserSetpoint = armPose.getAngle().get();
+        j4UserSetpoint = double(armPose.getAngle());
         j3Setpoint = 0;
     }
 
     bool poseReached(double tolerance)
     {
-        return error.magnitude() < tolerance && j4Error < tolerance;
+        return abs(error) < tolerance && std::abs(j4Error) < tolerance;
     }
 };

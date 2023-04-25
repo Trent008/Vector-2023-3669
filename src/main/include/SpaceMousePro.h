@@ -1,6 +1,7 @@
 #pragma once
 #include "frc/Joystick.h"
-#include "Vector.h"
+#include "utilities.h"
+using namespace math;
 
 class SpaceMousePro
 {

@@ -1,5 +1,6 @@
 #pragma once
-#include "Pose.h"
+#include "utilities.h"
+using namespace math;
 
 // pose, armPose, useLimelight, driveRate, rotationRate
 struct AutoSetpoint

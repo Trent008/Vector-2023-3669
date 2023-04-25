@@ -61,7 +61,7 @@ public:
 
   // swerve drive object to control the 4-SwerveModule array using the motion controller object
   SwerveDrive swerve;
-  SwervePoseTargeting swerveTargeting{&swerve, 0.023, 0.007};
+  SwervePoseTargeting swerveTargeting{&swerve};
 
   
   bool isCone = true;

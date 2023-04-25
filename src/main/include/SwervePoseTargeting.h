@@ -8,18 +8,15 @@
 class SwervePoseTargeting
 {
 private:
-    double positionProportional; // rate at which to approach the current position
-    double angleProportional;    // rate at which to approach the current angle
-    bool useAcceleration;       // whether or not to accelerate the robot rate
+    double positionProportional = 0.023; // rate at which to approach the current position
+    double angleProportional = 0.007;    // rate at which to approach the current angle
     Pose poseError;              // how fast the robot needs to move to get to its next position setpoint
     Pose swerveRate;
     SwerveDrive *swerve;
 
 public:
-    SwervePoseTargeting(SwerveDrive *swerve, double positionProportional, double angleProportional)
+    SwervePoseTargeting(SwerveDrive *swerve)
     {   
-        this->positionProportional = positionProportional;
-        this->angleProportional = angleProportional;
         this->swerve = swerve;
     }
 
@@ -34,6 +31,6 @@ public:
 
     bool poseReached(double positionTolerance, double angleTolerance)
     {
-        return (poseError.getVector().magnitude() < positionTolerance) && (poseError.getAngle().magnitude() < angleTolerance);
+        return (abs(poseError.getVector()) < positionTolerance) && (abs(poseError.getAngle()) < angleTolerance);
     }
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "frc/Joystick.h"
-#include "Pose.h"
+#include "utilities.h"
+using namespace math;
 
 class XBOXController
 {
