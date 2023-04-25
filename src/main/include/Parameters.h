@@ -26,7 +26,7 @@ struct Parameters
     // swerve presets
     Pose chargingStation = {{0, 77}, 180};
     Vector startingPosition = {0, 0};
-    Angle startingAngle = 0;
+    Angle startingAngle = 180;
     Pose startingPose = {startingPosition, startingAngle};
 
     /*

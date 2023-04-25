@@ -46,6 +46,9 @@ public:
     {
         moduleVelocity = robotRate.getVector() + turnVector * robotRate.getAngle();
         error = moduleVelocity.getAngle() - Angle{wheelEncoder->GetAbsolutePosition()};
+        if (abs(moduleVelocity) < .02) {
+            error = 0;
+        }
         if (abs(error) < 90) {
             wheelDirection = 1;
         }

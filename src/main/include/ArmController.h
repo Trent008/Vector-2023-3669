@@ -42,7 +42,7 @@ private:
     double j4Setpoint;
     double j4Current = 0;
     double startingJ4Position;
-    double j4Error;
+    double j4Error = .02;
 
 public:
     // leadscrew motors and PID controllers
