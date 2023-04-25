@@ -9,7 +9,6 @@
 #include "XKeysPad.h"
 #include "ArmController.h"
 #include "SwervePoseTargeting.h"
-#include "Parameters.h"
 
 class Robot : public frc::TimedRobot
 {
