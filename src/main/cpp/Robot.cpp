@@ -29,10 +29,10 @@ void Robot::RobotPeriodic(){}
 void Robot::AutonomousInit()
 {
   params.isAutonomous = true;
-  driveMotor1.SetSelectedSensorPosition(0);
-  driveMotor2.SetSelectedSensorPosition(0);
-  driveMotor3.SetSelectedSensorPosition(0);
-  driveMotor4.SetSelectedSensorPosition(0);
+  driveMotor1.SetRotorPosition(0_tr);
+  driveMotor2.SetRotorPosition(0_tr);
+  driveMotor3.SetRotorPosition(0_tr);
+  driveMotor4.SetRotorPosition(0_tr);
   swerve.zeroYaw();
 }
 

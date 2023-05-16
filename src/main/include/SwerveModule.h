@@ -1,5 +1,6 @@
 #pragma once
 #include "ctre/phoenix.h"
+#include "ctre/phoenixpro/TalonFX.hpp"
 #include "Vector.h"
 #include "AngleOptimization.h"
 #include "rev/CANSparkMax.h"
@@ -16,7 +17,7 @@ private:
     double lastPosition = 0;
     double currentPosition;
     AngleOptimizer angleChooser{};
-    WPI_TalonFX *driveMotor;
+    phoenixpro::hardware::TalonFX *driveMotor;
     rev::CANSparkMax *steeringMotor;
     CANCoder *wheelEncoder;
     Vector wheelPositionChange;
@@ -26,7 +27,7 @@ public:
      * parameters posX and posY set the position of
      * the module relative to the center of the robot
      */
-    SwerveModule(WPI_TalonFX *driveMotor, rev::CANSparkMax *steeringMotor, CANCoder *wheelEncoder, Vector position)
+    SwerveModule(phoenixpro::hardware::TalonFX *driveMotor, rev::CANSparkMax *steeringMotor, CANCoder *wheelEncoder, Vector position)
     {
         steeringMotorP = 1;
         this->driveMotor = driveMotor;
@@ -58,7 +59,7 @@ public:
             driveMotor->Set(wheelSpeed);//ControlMode::Velocity, wheelSpeed * 6380 * 2048 / 600);
         }
         steeringMotor->Set(angleError * (-steeringMotorP) / 180);
-        currentPosition = driveMotor->GetSelectedSensorPosition(0);
+        currentPosition = driveMotor->GetPosition().GetValue().value();
         wheelPositionChange = Polar(currentPosition - lastPosition, angleWheel);
         lastPosition = currentPosition;
     }

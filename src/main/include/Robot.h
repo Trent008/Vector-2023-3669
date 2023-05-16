@@ -35,10 +35,10 @@ public:
 
 
   /* -------- swerve drive motors -------- */
-  WPI_TalonFX driveMotor1{11};
-  WPI_TalonFX driveMotor2{12};
-  WPI_TalonFX driveMotor3{13};
-  WPI_TalonFX driveMotor4{14};
+  phoenixpro::hardware::TalonFX driveMotor1{11, "rio"};
+  phoenixpro::hardware::TalonFX driveMotor2{12, "rio"};
+  phoenixpro::hardware::TalonFX driveMotor3{13, "rio"};
+  phoenixpro::hardware::TalonFX driveMotor4{14, "rio"};
   /* -------- swerve module encoders -------- */
   CANCoder encoder1{21};
   CANCoder encoder2{22};
