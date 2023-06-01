@@ -12,6 +12,10 @@ void Robot::RobotInit()
     arm.j2.SetP(0.05);
     arm.j3.SetP(0.1);
     arm.j4.SetP(0.1);
+  steeringMotor1.SetInverted(false);
+  steeringMotor2.SetInverted(false);
+  steeringMotor3.SetInverted(false);
+  steeringMotor4.SetInverted(false);
 }
 
 void Robot::RobotPeriodic(){}
